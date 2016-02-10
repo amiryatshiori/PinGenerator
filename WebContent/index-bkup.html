@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Pin Generator</title>
+        <meta name="description" content="Pin Generator">
+        <meta name="author" content="TV-Telecom.com,Thanwa Ananthaseth">
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+
+        <link rel="shortcut icon" href="http://cdn.ink.sapo.pt/3.1.10/img/favicon.ico">
+        <link rel="apple-touch-icon" href="http://cdn.ink.sapo.pt/3.1.10/img/touch-icon-iphone.png">
+        <link rel="apple-touch-icon" sizes="76x76" href="http://cdn.ink.sapo.pt/3.1.10/img/touch-icon-ipad.png"> 
+        <link rel="apple-touch-icon" sizes="120x120" href="http://cdn.ink.sapo.pt/3.1.10/img/touch-icon-iphone-retina.png">
+        <link rel="apple-touch-icon" sizes="152x152" href="http://cdn.ink.sapo.pt/3.1.10/img/touch-icon-ipad-retina.png">
+        <link rel="apple-touch-startup-image" href="http://cdn.ink.sapo.pt/3.1.10/img/splash.320x460.png" media="screen and (min-device-width: 200px) and (max-device-width: 320px) and (orientation:portrait)">
+        <link rel="apple-touch-startup-image" href="http://cdn.ink.sapo.pt/3.1.10/img/splash.768x1004.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:portrait)">
+        <link rel="apple-touch-startup-image" href="http://cdn.ink.sapo.pt/3.1.10/img/splash.1024x748.png" media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
+
+        <link rel="stylesheet" type="text/css" href="css/ink-flex.min.css">
+        <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+        
+        <!--[if lt IE 9 ]>
+            <link rel="stylesheet" href="css/ink-ie.min.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <![endif]-->
+
+        <script type="text/javascript" src="js/modernizr.js"></script>
+        <script type="text/javascript">
+            Modernizr.load({
+              test: Modernizr.flexbox,
+              nope : 'css/ink-legacy.min.css'
+            });
+        </script>
+
+        <script type="text/javascript" src="js/holder.js"></script>
+        <script type="text/javascript" src="js/ink-all.min.js"></script>
+        <script type="text/javascript" src="js/autoload.js"></script>
+        <script type="text/javascript" src="js/pingen.js"></script>
+    </head>
+
+    <body>
+
+        <!--[if lte IE 9 ]>
+        <div class="ink-grid">
+            <div class="ink-alert basic" role="alert">
+                <button class="ink-dismiss">&times;</button>
+                <p>
+                    <strong>You are using an outdated Internet Explorer version.</strong>
+                    Please <a href="http://browsehappy.com/">upgrade to a modern browser</a> to improve your web experience.
+                </p>
+            </div>
+        </div>
+        -->
+
+<div id="bar-top">
+    <nav class="ink-navigation ink-grid">
+       	<ul class="menu horizontal push-left">
+            <li class="active"><a href="#" class="logoPlaceholder" >CAT</a></li>
+        </ul>
+        <ul class="menu horizontal push-right">
+            <li><a href="#">item</a></li>
+        </ul>
+    </nav>
+</div>
+<div>&nbsp;</div>
+
+
+
+
+<!--
+    <div class="menu-left" style="position:fixed;top:40px;">
+<nav class="ink-navigation">
+    <ul class="menu vertical blue">
+        <li class="heading active"><a><i class="fa fa-credit-card"></i>&nbsp;&nbsp;&nbsp;Pin Generator</a></li>
+        <li class="submenu">
+            <a href="#">Generate PIN<i class="fa fa-chevron-right push-right space-top-font"></i></a>
+            <ul class="submenu flyout right" style="background:#ddd;color:white;">
+                <li><a onclick="menuPinGenBatch();">Batch</a></li>
+                <li><a onclick="menuPinGenSpecific();">Specific PIN</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Compare PIN</a></li>
+        <li><a>Export PIN</a></li>
+        <li class="separator-above disabled"><a>User Admin</a></li>
+        <li class="disabled"><a>Audit Log</a></li>
+
+    </ul>
+</nav>
+    </div>
+
+
+   <div class="panel" style="position:fixed;left:200px;top:50px;width:80%">
+<div class="all-33">&nbsp;</div>
+<div class="all-33">
+<form class="ink-form vertical-space">
+<label for="pin-digit">Pin Digit</label>
+<div class="control">
+<select id="pin-digit" style="width:15em;">
+  <option value="15">15</option>
+  <option value="14">14</option>
+  <option value="13">13</option>
+  <option value="12">12</option>
+</select>
+</div>
+	<div class="space"></div>
+	<label for="pin-amount">No. of Pin</label>
+	<div class="control">
+	    <input id="pin-amount" name="pin-amount" style="width:15em;" type="text" placeholder="No. of Pin">
+	</div>
+
+	<div class="space"></div>
+	<input type="submit" value="Generate" class="ink-button green">
+	<input type="submit" value="Cancel" class="ink-button red">
+</form>
+
+
+</div>
+<div class="all-33">&nbsp;</div>
+</div>
+  -->
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="ink-grid">
+  <div class="column-group">
+    <div class="menu-left">
+<nav class="ink-navigation vertical-space">
+    <ul class="menu vertical blue">
+        <li class="heading active"><a><i class="fa fa-credit-card"></i>&nbsp;&nbsp;&nbsp;Pin Generator</a></li>
+        <li class="submenu">
+            <a href="#">Generate PIN<i class="fa fa-chevron-right push-right space-top-font"></i></a>
+            <ul class="submenu flyout right" style="background:#ddd;color:white;">
+                <li><a onclick="menuPinGenBatch();">Batch</a></li>
+                <li><a onclick="menuPinGenSpecific();">Specific PIN</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Compare PIN</a></li>
+        <li><a>Export PIN</a></li>
+        <li class="separator-above disabled"><a>User Admin</a></li>
+        <li class="disabled"><a>Audit Log</a></li>
+
+    </ul>
+</nav>
+    </div>
+
+    <div class="panel-main">    
+<div class="ink-grid vertical-space">
+   <div class="panel">
+   <div id="main-panel">
+
+<!-- <div class="control-group">
+<div class="all-33">&nbsp;</div>
+
+ 
+<div class="all-33">
+
+ -->
+ <div class="push-center">
+<form class="ink-form vertical-space push-center">
+<label for="pin-digit">Pin Digit</label>
+<div class="control">
+<select id="pin-digit" style="width:15em;">
+  <option value="15">15</option>
+  <option value="14">14</option>
+  <option value="13">13</option>
+  <option value="12">12</option>
+</select>
+</div>
+	<div class="space"></div>
+	<label for="pin-amount">No. of Pin</label>
+	<div class="control">
+	    <input id="pin-amount" name="pin-amount" style="width:15em;" type="text" placeholder="No. of Pin">
+	</div>
+
+	<div class="space"></div>
+	<input type="submit" value="Generate" class="ink-button green">
+	<input type="submit" value="Cancel" class="ink-button red">
+</form>
+</div>
+
+
+
+<!-- 
+</div>
+<div class="all-33">&nbsp;</div>
+</div>
+ -->
+   
+
+<script>
+Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.Event_1', 'Ink.Dom.FormSerialize_1'], function(Ajax, InkEvent, FormSerialize) {
+
+    var form = Ink.i('form');
+  
+    function doPost(event) {
+        InkEvent.stopDefault(event);
+
+        var formData = FormSerialize.serialize(form);
+    
+        var uri = '/endpoint.php';
+        new Ajax(uri, {
+            method: 'POST',
+            postBody: formData,
+            onSuccess: function(obj) {
+                if(obj && obj.responseJSON) {
+                    var req = obj.responseJSON;
+                }
+            }, 
+            onFailure: function() {
+                Ink.warn('Ajax request failed');
+            }
+        });    
+    }
+  
+    InkEvent.observe(form, 'submit', doPost);
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+   
+   
+   
+   </div>
+
+<!-- 
+            <div class="ink-grid vertical-space">
+                <h1>heading</h1>
+                <p>And though of all men the moody captain of the Pequod was the least given to that sort of shallowest assumption; and though the only homage he ever exacted, was implicit, instantaneous obedience; though he required no man to remove the shoes from his feet ere stepping upon the quarter-deck; and though there were times when, owing to peculiar circumstances connected with events hereafter to be detailed, he addressed them in unusual terms, whether of condescension or IN TERROREM, or otherwise; yet even Captain Ahab was by no means unobservant of the paramount forms and usages of the sea.</p>
+            </div>
+            <div class="push"></div>
+ -->
+ 
+
+<form class="ink-form vertical-space">
+    <div class="control-group all-33">
+        <label for="email">Email</label>
+        <div class="control">
+            <input id="email" name="email" type="text" placeholder="Type some text">
+        </div>
+        <div class="space"></div>
+        <input type="submit" value="Search" class="ink-button green">
+    </div>
+</form>
+
+<div class="ink-grid">
+  <div class="column-group vertical-gutters vertical">
+
+
+
+    <div class="all-100">
+      <div class="column">column 1</div>
+    </div>
+    <div class="all-100">
+      <div class="column">column 2</div>
+    </div>
+    <div class="all-100">
+      <div class="column">column 3</div>
+    </div>
+  </div>
+</div>
+
+<div class="ink-grid">
+  <div class="column-group">
+    <div class="all-15">
+      ...
+    </div>
+    <div class="all-70">
+      ...
+    </div>
+    <div class="all-15">
+      ...
+    </div>
+  </div>
+</div>
+
+
+
+
+<form id="form" method="post" action="#">
+  <p>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name">
+  </p>
+  <p>
+    <label for="email">Email:</label>
+    <input type="text" id="email" name="email">
+  </p>
+  <p>Choices:</p> 
+  <p>
+    <input type="checkbox" name="choice[]" id="choice_a" value="A"> <label for="choice_a">A</label>
+  </p>
+  <p>
+    <input type="checkbox" name="choice[]" id="choice_b" value="B"> <label for="choice_b">B</label>
+  </p>
+  <p><button type="submit">Submit</button></p>
+</form>
+<script>
+Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.Event_1', 'Ink.Dom.FormSerialize_1'], function(Ajax, InkEvent, FormSerialize) {
+
+    var form = Ink.i('form');
+  
+    function doPost(event) {
+        InkEvent.stopDefault(event);
+
+        var formData = FormSerialize.serialize(form);
+    
+        var uri = '/endpoint.php';
+        new Ajax(uri, {
+            method: 'POST',
+            postBody: formData,
+            onSuccess: function(obj) {
+                if(obj && obj.responseJSON) {
+                    var req = obj.responseJSON;
+                }
+            }, 
+            onFailure: function() {
+                Ink.warn('Ajax request failed');
+            }
+        });    
+    }
+  
+    InkEvent.observe(form, 'submit', doPost);
+});
+</script>
+
+
+<!--             
+        <div id="car1" class="ink-carousel" data-space-after-last-slide="false" data-autoload="false">
+
+            <ul class="stage column-group half-gutters">
+
+                <li class="slide xlarge-25 large-25 medium-33 small-50 tiny-100">
+                    <img class="half-bottom-space" src="http://lorempixel.com/400/200/sports/1">
+                    <div class="description">
+                        <h4 class="no-margin">Highlight Title</h4>
+                        <h5 class="slab">Baby Doe</h5>
+                        <p>É importante questionar o quanto a constante divulgação das informações ainda não demonstrou convincentemente que vai participar na mudança do impacto na agilidade decisória.</p>
+                    </div>
+                </li>
+
+                <li class="slide xlarge-25 large-25 medium-33 small-50 tiny-100">
+                    <img class="half-bottom-space" src="http://lorempixel.com/400/200/sports/2">
+                    <div class="description">
+                        <h4 class="no-margin">Highlight Title</h4>
+                        <h5 class="slab">Baby Doe</h5>
+                        <p>Devemos cultivar os nossos soft powers sagrados</p>
+                    </div>
+                </li>
+
+                <li class="slide xlarge-25 large-25 medium-33 small-50 tiny-100">
+                    <img class="half-bottom-space" src="http://lorempixel.com/400/200/sports/3">
+                    <div class="description">
+                        <h4 class="no-margin">Highlight Title</h4>
+                        <h5 class="slab">Baby Doe</h5>
+                        <p>Rumo ao inconseguimento de cenas</p>
+                    </div>
+                </li>
+
+                <li class="slide xlarge-25 large-25 medium-33 small-50 tiny-100">
+                    <img class="half-bottom-space" src="http://lorempixel.com/400/200/sports/4">
+                    <div class="description">
+                        <h4 class="no-margin">Highlight Title</h4>
+                        <h5 class="slab">Baby Doe</h5>
+                        <p>É importante questionar o quanto a constante divulgação das informações ainda não demonstrou convincentemente que vai participar na mudança do impacto na agilidade decisória.</p>
+                    </div>
+                </li>
+
+                <li class="slide xlarge-25 large-25 medium-33 small-50 tiny-100">
+                    <img class="half-bottom-space" src="http://lorempixel.com/400/200/sports/5">
+                    <div class="description">
+                        <h4 class="no-margin">Highlight Title</h4>
+                        <h5 class="slab">Baby Doe</h5>
+                        <p>É importante questionar o quanto a constante divulgação das informações ainda não demonstrou convincentemente que vai participar na mudança do impacto na agilidade decisória.</p>
+                    </div>
+                </li>
+
+                <li class="slide xlarge-25 large-25 medium-33 small-50 tiny-100">
+                    <img class="half-bottom-space" src="http://lorempixel.com/400/200/sports/6">
+                    <div class="description">
+                        <h4 class="no-margin">Highlight Title</h4>
+                        <h5 class="slab">Baby Doe</h5>
+                        <p>É importante questionar o quanto a constante divulgação das informações ainda não demonstrou convincentemente que vai participar na mudança do impacto na agilidade decisória.</p>
+                    </div>
+                </li>
+
+                <li class="slide xlarge-25 large-25 medium-33 small-50 tiny-100">
+                    <img class="half-bottom-space" src="http://lorempixel.com/400/200/sports/7">
+                    <div class="description">
+                        <h4 class="no-margin">Highlight Title</h4>
+                        <h5 class="slab">Baby Doe</h5>
+                        <p>É importante questionar o quanto a constante divulgação das informações ainda não demonstrou convincentemente que vai participar na mudança do impacto na agilidade decisória.</p>
+                    </div>
+                </li>
+
+                <li class="slide xlarge-25 large-25 medium-33 small-50 tiny-100">
+                    <img class="half-bottom-space" src="http://lorempixel.com/400/200/sports/8">
+                    <div class="description">
+                        <h4 class="no-margin">Highlight Title</h4>
+                        <h5 class="slab">Baby Doe</h5>
+                        <p>É importante questionar o quanto a constante divulgação das informações ainda não demonstrou convincentemente que vai participar na mudança do impacto na agilidade decisória.</p>
+                    </div>
+                </li>
+
+                <li class="slide xlarge-25 large-25 medium-33 small-50 tiny-100">
+                    <img class="half-bottom-space" src="http://lorempixel.com/400/200/sports/9">
+                    <div class="description">
+                        <h4 class="no-margin">Highlight Title</h4>
+                        <h5 class="slab">Baby Doe</h5>
+                        <p>É importante questionar o quanto a constante divulgação das informações ainda não demonstrou convincentemente que vai participar na mudança do impacto na agilidade decisória.</p>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+
+ 
+        <nav id="p1" class="ink-navigation">
+            <ul class="pagination black">
+            </ul>
+        </nav>
+-->
+    </div>
+
+<!-- 
+    <script>
+        Ink.requireModules(['Ink.UI.Carousel_1'], function(InkCarousel) {
+            new InkCarousel('#car1', {pagination: '#p1'});
+        });
+    </script>
+ -->
+     
+</div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+    
+<!--
+        <footer class="clearfix">
+            <div class="ink-grid">
+                <ul class="unstyled inline half-vertical-space">
+                    <li class="active"><a href="#">About</a></li>
+                    <li><a href="#">Sitemap</a></li>
+                    <li><a href="#">Contacts</a></li>
+                </ul>
+                <p class="note">Identification of the owner of the copyright, either by name, abbreviation, or other designation by which it is generally known.</p>
+            </div>
+        </footer>
+-->
+<footer class="bar-bottom">
+            <ul class="unstyled">
+                <li class="hide-all show-tiny tiny">TINY</li>
+                <li class="hide-all show-small small">SMALL</li>
+                <li class="hide-all show-medium medium">MEDIUM</li>
+                <li class="hide-all show-large large">LARGE</li>
+                <li class="hide-all show-xlarge xlarge">XLARGE</li>
+            </ul>
+</footer>
+
+            
+    </body>
+
+</html>

@@ -1,0 +1,31 @@
+<h2>Generate Pin / Batch</h2>
+<form id="formPinGenBatch" class="ink-form vertical-space">
+<div class="control-group required">
+	<label for="pinDigit">Pin Digit</label>
+	<div class="control">
+<!-- 
+	<select id="pinDigit" style="width:15em;">
+		<option value="15">15</option>
+		<option value="14">14</option>
+		<option value="13">13</option>
+		<option value="12" selected>12</option>
+		<option value="11">11</option>
+		<option value="10">10</option>
+		<option value="9">9</option>
+		<option value="8">8</option>
+	</select>
+ -->
+	<input name="pinDigit" type="number" style="width:15em;" min="1" max="15" placeholder="pinDigit" value="8">
+	</div>
+</div>
+<div class="control-group required">
+	<label for="pinAmount">Pin Amount</label>
+	<div class="control">
+	    <input name="pinAmount" style="width:15em;" type="text" placeholder="Pin Amount">
+	</div>
+</div>
+	<input type="button" value="Generate" class="ink-button green" onclick="pinGenButtonGenerateClick();">
+	<input type="button" value="Cancel" class="ink-button red">
+</form>
+
+<div id="formPinGenBatchStatus"></div>
