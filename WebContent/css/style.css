@@ -69,9 +69,14 @@ html, body {
 }
 
 .ink-form .control-group.required label:after, .ink-form .control-group.required p.label:after {
-	margin-top:-5em;
+	margin-top:0em;
 }
-
+.ink-modal > .modal-header > .modal-close:after, .ink-modal > header > .modal-close:after {
+  content: "\f00d";
+  font-family: FontAwesome;
+  font-size: medium;
+  line-height: 22px;
+}
 .bar-bottom {
     position: fixed;
     bottom: 0;
