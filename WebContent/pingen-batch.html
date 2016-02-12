@@ -18,28 +18,28 @@
 		<option value="8">8</option>
 	</select>
  -->
-	<input name="pinDigit" type="number" style="width:15em;" min="1" max="15" placeholder="pinDigit" value="12">
+	<input id="pinDigit" name="pinDigit" type="number" style="width:15em;" min="1" max="15" placeholder="pinDigit" value="12">
 	</div>
 </div>
 <div class="control-group required">
 	<label for="pinAmount">Pin Amount:</label>
 	<div class="control">
-	    <input name="pinAmount" style="width:15em;" type="text" placeholder="Pin Amount">
+	    <input id="pinAmount" name="pinAmount" style="width:15em;" type="text" placeholder="Pin Amount">
 	</div>
 </div>
-	<input type="button" value="Generate" class="ink-button green" onclick="pinGenButtonGenerateClick();">
-	<input type="button" value="Cancel" class="ink-button red" onclick="goHome()">
+	<input id="buttonGenerate" type="button" value="Generate" class="ink-button green" onclick="pinGenBatchButtonGenerateClick();">
+	<input id="buttonCancel" type="button" value="Cancel" class="ink-button red" onclick="goHome()">
 </form>
         </li>
 
         <li class="slide all-100">
         	<div id="pinGenBatchJobId"></div><br/>
 			Generating.. <br/><br/>
-			<div id="pinGenBatchProgressBar" class="ink-progress-bar grey" data-start-value="0">
-    			<span class="caption"><i class="fa fa-cog fa-spin"></i>&nbsp;&nbsp;Generating...</span><div class="bar grey"></div>
+			<div id="pinGenBatchProgressBar" class="ink-progress-bar" data-start-value="0">
+    			<span id="pinGenBatchProgressBarCaption" class="caption"><i class="fa fa-cog fa-spin"></i>&nbsp;&nbsp;Generating...</span><div class="bar green"></div>
 			</div>
-			<br/>You can close this page and continue your work.<br/>
-			And find job progress on <a onclick="menuJobList();">Job List</a> later
+			<br/>You can close this page to continue your work<br/>
+			and find your job progress on <a onclick="menuJobList();">Job List</a> later
 			<br/><br/>
 			<div class="push-right"><button class="ink-button" onclick="goHome()">&nbsp;&nbsp;&nbsp;Close&nbsp;&nbsp;&nbsp;</button></div><br/>
 			&nbsp;<br/>
@@ -59,7 +59,7 @@
             Do you really want to generate PIN?
         </div>
         <div class="modal-footer">
-        	<div class="push-left"><button class="ink-button ink-dismiss green" onclick="pinGenButtonConfirmClick();">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button></div>
+        	<div class="push-left"><button class="ink-button ink-dismiss green" onclick="pinGenBatchButtonConfirmClick();">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yes&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button></div>
             <div class="push-right"><button class="ink-button ink-dismiss red">&nbsp;&nbsp;&nbsp;Cancel&nbsp;&nbsp;&nbsp;</button></div>
         </div>
     </div>
