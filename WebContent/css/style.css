@@ -68,6 +68,14 @@ html, body {
     background-color: #FFF;
 }
 
+.dbPinStockCount {
+	height: 6em;
+	width: 6em;
+	margin-top: 1em;
+	background-color: #ffc2b3;
+	
+}
+
 .ink-form .control-group.required label:after, .ink-form .control-group.required p.label:after {
 	margin-top:0em;
 }
@@ -77,6 +85,24 @@ html, body {
   font-size: medium;
   line-height: 22px;
 }
+
+.joblist {
+	height: 6em;
+	margin-top: 1em;
+}
+
+.joblist-succeed {
+	background-color: #b3e6ff; //#d1e0e0;
+}
+
+.joblist-failed {
+	background-color: #ffc2b3;
+}
+
+.joblist-processing {
+	background-color: #A8A8A8;
+}
+
 .bar-bottom {
     position: fixed;
     bottom: 0;

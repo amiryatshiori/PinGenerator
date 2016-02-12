@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,39 +17,31 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-//import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
-@WebServlet("/JobList")
-public class JobList extends HttpServlet {
+@WebServlet("/PinGenBatchCSV")
+public class PinGenBatchCSV extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public JobList() {
+    public PinGenBatchCSV() {
         super();
     }
 
-	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Logger LOG = Logger.getLogger(JobList.class.getName());
+        Logger LOG = Logger.getLogger(PinGenBatchCSV.class.getName());
         request.setCharacterEncoding(Utils.CharacterEncoding);
 		//HttpSession session = request.getSession(true);
 		//String userId = (String)session.getAttribute("userId");
         String jobId = request.getParameter("jobId");
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"JobList",jobId});  
+LOG.log(Level.INFO,"{0}-{1}",new Object[]{"PinGenBatchCSV",jobId});
 
 		Connection con = null;
 		Statement st1 = null;
-		String sql1 = "select * from job order by jobid desc";
-		if (jobId != null) {sql1 ="select * from job where jobid = " + jobId + " order by jobid desc";}
+		String sql1 = "select * from pin";
+		if (jobId != null) {sql1 ="select * from pin where jobid = " + jobId;}
 		ResultSet rs1 = null;
 
-		String result="failed";
-        JSONObject json;
-        JSONArray jsonA = new JSONArray();
-        SimpleDateFormat dFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+		String result="";
 		try {
 			Context ctx = new InitialContext();
 			DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/PinGen");
@@ -58,17 +49,9 @@ LOG.log(Level.INFO,"{0}-{1}",new Object[]{"JobList",jobId});
 			st1 = con.createStatement();
 			rs1 = st1.executeQuery(sql1);
 			while (rs1.next()) {
-                json = new JSONObject();
-                json.put("JOBID",rs1.getInt("JOBID"));
-                json.put("PINDIGIT",rs1.getInt("PINDIGIT"));
-                json.put("PINAMOUNT",rs1.getLong("PINAMOUNT"));
-                json.put("STATUS",rs1.getString("STATUS"));
-                json.put("CREATOR",rs1.getInt("CREATOR"));
-                json.put("CREATEDDATE",dFormat.format(new java.util.Date(rs1.getTimestamp("CREATEDDATE").getTime())));
-                jsonA.add(json);
+				result += rs1.getString("PIN")+"\n";
 			}
-			result = "succeed";
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"JobList","result: "+result});
+LOG.log(Level.INFO,"{0}-{1}",new Object[]{"PinGenBatchCSV","result: "+result});
 		} catch(NamingException | SQLException ex) {
 			LOG.log(Level.SEVERE, ex.getMessage(), ex);
 			result = "failed";
@@ -80,14 +63,11 @@ LOG.log(Level.INFO,"{0}-{1}",new Object[]{"JobList","result: "+result});
 		    	LOG.log(Level.WARNING, ex.getMessage(), ex);
 		    }
 		}
-		JSONObject res = new JSONObject();
-		res.put("result", result);
-		res.put("joblist", jsonA);
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"JobList","jsonZ: "+res.toJSONString()});		
-		response.setContentType("application/json");
+		response.setContentType("text/csv");
+		response.setHeader("Content-Disposition", "attachment; filename=\"job-"+jobId+".csv\"");
 		response.setCharacterEncoding(Utils.CharacterEncoding);
 		PrintWriter out = response.getWriter();
-		res.writeJSONString(out);
+		out.print(result);
 		out.flush();
 	}
 

@@ -16,26 +16,52 @@ function menuPinGenSpecific() {
 }
 
 function menuJobList() {
-	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1'], function(Ajax,InkElement) {
+	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1','Ink.Net.JsonP_1'], function(Ajax,InkElement,JsonP) {
 		var container = Ink.i('main-panel');
 		InkElement.setHTML(container,'<h2>Job List</h2><div id="joblist"></div>');
-
+		var joblist = Ink.i('joblist');
         var uri = window.url_home + '/JobList';
         new Ajax(uri, {
-            method: 'POST',
-            postBody: formData,
+            method: 'GET',
             onSuccess: function(obj) {
                 if(obj && obj.responseJSON) {
-                	var result = obj.responseJSON['result'];
-                	var jobId = obj.responseJSON['jobId'];
-                  	Ink.log("result: " + result);
-                  	Ink.log("jobId: " + jobId);
+                  	var json = obj.responseJSON;
+					for(var i=0, total=json.joblist.length; i < total; i++) {
+						var joblistStatusColor = "joblist-processing";
+						if (json.joblist[i].STATUS == 'S') {joblistStatusColor = "joblist-succeed"} 
+						else if (json.joblist[i].STATUS == 'F') {joblistStatusColor = "joblist-failed"}
+						var contents = '<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Job ID: '+json.joblist[i].JOBID;
+						contents += '<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status: '+json.joblist[i].STATUS;
+		        		InkElement.appendHTML(joblist,'<div class="joblist '+joblistStatusColor+'">'+contents+'</div>');
+					}
                 }
             }, 
             onFailure: function() {
-            	Ink.log("result: failed on network!");
+Ink.log("result: failed on network!");
             }
         });
+        
+/*
+        new JsonP(uri, {
+            params: {limit: '3'}, // the query string parameters can be defined here 
+            onSuccess: function(data) {
+            	
+                var aItems = data.rss.channel.item;
+                var container = Ink.i('container');
+                var curImg;
+                for(var i=0, total=aItems.length; i < total; i++) {
+                    curImg = new Image();
+                    curImg.src = aItems[i]['media:thumbnail'][0].url;
+                    container.appendChild(curImg);
+                }
+                
+Ink.log("result: " + data[0]);Ink.log("result: " + data[1]);
+            }, 
+            onFailure: function() {
+                Ink.warn('JsonP request failed');
+            }
+        });
+*/
 	});
 }
 
@@ -97,6 +123,7 @@ Ink.log("result: " + result);Ink.log("jobId: " + jobId);Ink.log("count: " + c);
 							setTimeout(function(){pinGenBatchUpdateProgress(probar,jobId,pinAmount);},3000);
 						} else {
 							InkElement.setHTML(Ink.i('pinGenBatchProgressBarCaption'),'<div style="color:white"><i class="fa fa-cog"></i>&nbsp;&nbsp;Succeed</div>');
+							InkElement.setHTML(Ink.i('pinGenBatchAction'),'Export as CSV file: click <a href="'+window.url_home + '/PinGenBatchCSV?jobId='+jobId+'">here</a>');
 						}
 					} else {
 Ink.log("result: " + result);
