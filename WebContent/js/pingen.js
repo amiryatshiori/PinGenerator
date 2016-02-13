@@ -45,28 +45,6 @@ function menuJobList() {
 Ink.log("result: failed on network!");
             }
         });
-        
-/*
-        new JsonP(uri, {
-            params: {limit: '3'}, // the query string parameters can be defined here 
-            onSuccess: function(data) {
-            	
-                var aItems = data.rss.channel.item;
-                var container = Ink.i('container');
-                var curImg;
-                for(var i=0, total=aItems.length; i < total; i++) {
-                    curImg = new Image();
-                    curImg.src = aItems[i]['media:thumbnail'][0].url;
-                    container.appendChild(curImg);
-                }
-                
-Ink.log("result: " + data[0]);Ink.log("result: " + data[1]);
-            }, 
-            onFailure: function() {
-                Ink.warn('JsonP request failed');
-            }
-        });
-*/
 	});
 }
 
@@ -139,5 +117,12 @@ Ink.log("result: " + result);
 Ink.log("result: " + result);
 	        }
 	    });
+	});
+}
+
+function pinGenSpecButtonPlusClick() {
+	Ink.requireModules(['Ink.Dom.Element_1'], function(InkElement) {
+		var stacker = Ink.i('pinGenSpecStack');
+		InkElement.appendHTML(stacker,'<div class="ink-alert basic info"><b>A - 1</b></div>');
 	});
 }

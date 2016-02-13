@@ -1,15 +1,16 @@
 <h2>Generate Pin / Specific</h2>
-<div id="pinGenSpecCarousel" class="ink-carousel">
-    <ul class="stage column-group">
-        <li class="slide all-100">
+<div>
+
         
         <form id="formPinGenSpec" class="ink-form">
         <div class="control-group">
-            <div class="control append-button" role="search" style="width:15em;">
-                <span><input type="text" name="name" id="name"></span>
-                <button class="ink-button green"><i class="fa fa-plus-circle"></i></button>
+            <div class="control append-button" style="width:15em;">
+                <span><input type="text" name="pin" id="pin"></span>
+                <input type="button" value="&#xf055;" class="ink-button green fa" onclick="pinGenSpecButtonPlusClick()">
+                <!-- <button class="ink-button green" onclick="pinGenSpecButtonPlusClick()"><i class="fa fa-plus-circle"></i></button>  -->
             </div>
         </div>
+
         <hr/><br/>
         <!--
         <div class="control-group">
@@ -19,7 +20,7 @@
                 <button class="ink-button red"><i class="fa fa-times"></i></button>
             </div>
         </div>
-          -->
+
         <div class="control-group">
             <div class="control append-button" role="search" style="width:15em;">
                 <span><input type="text" name="name" id="name" disabled></span>
@@ -38,29 +39,18 @@
                 <button class="ink-button red"><i class="fa fa-times"></i></button>
             </div>
         </div>
+                  -->
+        
+        <div id="pinGenSpecStack">
+        	<div class="ink-alert basic info"><b>A - 1</b></div>
+
+		</div>
         
         <br/><hr/>
         <input id="buttonAdd" type="button" value="Add Pins" class="ink-button green" onclick="pinGenSpecButtonAddClick();">
 		<input id="buttonCancel" type="button" value="Cancel" class="ink-button red" onclick="goHome()">
 		<br/><br/>
 		</form>
-
-        </li>
-
-        <li class="slide all-100">
-        	<div id="pinGenBatchJobId"></div><br/>
-			<div id="pinGenBatchAction">Generating..</div> 
-			<br/><br/>
-			<div id="pinGenBatchProgressBar" class="ink-progress-bar" data-start-value="0">
-    			<span id="pinGenBatchProgressBarCaption" class="caption"><i class="fa fa-cog fa-spin"></i>&nbsp;&nbsp;Generating...</span><div class="bar green"></div>
-			</div>
-			<br/>You can close this page to continue your work<br/>
-			and find your job progress on <a onclick="menuJobList();">Job List</a> later
-			<br/><br/>
-			<div class="push-right"><button class="ink-button" onclick="goHome()">&nbsp;&nbsp;&nbsp;Close&nbsp;&nbsp;&nbsp;</button></div><br/>
-			&nbsp;<br/>
-        </li>
-    </ul>
 </div>
 <div class="ink-shade fade">
     <div id="formPinGenBatchConfirm" class="ink-modal fade" data-trigger="#formPinGenBatchConfirmTrigger" data-width="500px" data-height="400px" role="dialog" aria-hidden="true" aria-labelled-by="modal-title">
