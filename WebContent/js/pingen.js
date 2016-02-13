@@ -12,7 +12,12 @@ function menuPinGenBatch() {
 }
 
 function menuPinGenSpecific() {
-	alert("spec");
+	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1'], function(Ajax,InkElement) {
+		var container = Ink.i('main-panel');
+		Ajax.load('pingen-spec.html', function (res) {
+		    InkElement.setHTML(container,res);
+		});
+	});
 }
 
 function menuJobList() {

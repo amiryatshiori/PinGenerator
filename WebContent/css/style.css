@@ -69,11 +69,11 @@ html, body {
 }
 
 .dbPinStockCount {
-	height: 6em;
-	width: 6em;
 	margin-top: 1em;
+	margin-bottom: 1em;
+	margin-left:1em;
+	margin-right:1em;
 	background-color: #ffc2b3;
-	
 }
 
 .ink-form .control-group.required label:after, .ink-form .control-group.required p.label:after {
