@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,10 +32,20 @@ public class PinGenSpecAdd extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Logger LOG = Logger.getLogger(PinGenSpecAdd.class.getName());
         request.setCharacterEncoding(Utils.CharacterEncoding);    
-        String pin = request.getParameter("pin").trim();
+        int pinCount = Integer.parseInt(request.getParameter("pinCount"));
+        ArrayList<String> pin=new ArrayList<String>();
+        String pinTemp = "";
+        for (int i = 1; i <= pinCount; i++) {
+        	pinTemp = request.getParameter("pin"+i).trim();
+        	if (!pinTemp.isEmpty()) {
+                pin.add(pinTemp);
+LOG.log(Level.INFO,"{0} {1}",new Object[]{"PinGenSpecAdd-pin: ",pinTemp});
+        	}
+        }
+
 		//HttpSession session = request.getSession(true);
 		//String userId = (String)session.getAttribute("userId");
-LOG.log(Level.INFO,"{0} {1}",new Object[]{"PinGenSpecAdd-pin: ",pin});
+
         //int pinDigit = pin.length(); 
 		Connection con = null;
 		Statement st1 = null;
@@ -42,7 +54,8 @@ LOG.log(Level.INFO,"{0} {1}",new Object[]{"PinGenSpecAdd-pin: ",pin});
 		
 		//String sql2 = "insert into job (JOBID,PINDIGIT,PINAMOUNT,STATUS,CREATOR,CREATEDDATE) values (jobId," + pinDigit + ",1,'I',"+ userId + ",CURRENT_TIMESTAMP)";
 
-		String sql3 = "insert into pin values (pinId,jobId)";
+		String sql3 = "insert into pin values ('pinId',jobId)";
+		String sql3r = "";
 		
 /*
 		Statement st2 = null;
@@ -71,10 +84,14 @@ LOG.log(Level.INFO,"sql2:{0}",new Object[]{sql2});
 */
 			
         	try {
-        		sql3 = sql3.replaceAll("jobId", Integer.toString(jobId));
-        		sql3 = sql3.replace("pinId", pin);
-
-				st1.executeUpdate(sql3);
+        		Iterator<String> it = pin.iterator();
+    	        while(it.hasNext()) {
+    	            pinTemp = it.next();
+    	            sql3r = sql3.replaceAll("jobId", "0");
+            		sql3r = sql3r.replaceAll("jobId", Integer.toString(jobId));
+        			sql3r = sql3r.replace("pinId", pinTemp);
+					st1.executeUpdate(sql3r);
+    	        }
 				result = "succeed";
 	        } catch (java.sql.SQLIntegrityConstraintViolationException e) {
 				dup = true;result="dup";
