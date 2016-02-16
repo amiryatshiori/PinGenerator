@@ -29,12 +29,16 @@ public class Init extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Logger LOG = Logger.getLogger(JobList.class.getName());
         request.setCharacterEncoding(Utils.CharacterEncoding);
-        //String jobId = request.getParameter("jobId");
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"Init","Start"});  
+        String clean = request.getParameter("clean").trim();
+LOG.log(Level.INFO,"{0} {1}",new Object[]{"Init","Start"});  
 
 		Connection con = null;
 		Statement st1 = null;
 		ResultSet rs1 = null;
+		
+		String sql01 = "DROP TABLE USR";
+		String sql02 = "DROP TABLE JOB";
+		String sql03 = "DROP TABLE PIN";
 		
 		String sql11 = "SELECT * FROM USR";
 		String sql21 = "SELECT * FROM JOB";
@@ -42,7 +46,7 @@ LOG.log(Level.INFO,"{0}-{1}",new Object[]{"Init","Start"});
 		
 		String sql12 = "CREATE TABLE USR (USERID INT NOT NULL PRIMARY KEY, NAME VARCHAR(80), USERNAME VARCHAR(40), PASSWORD VARCHAR(40), CREATOR INT NOT NULL, CREATEDDATE TIMESTAMP NOT NULL)";
 		String sql22 = "CREATE TABLE JOB (JOBID INTEGER NOT NULL PRIMARY KEY, PINDIGIT INT, PINAMOUNT BIGINT, STATUS VARCHAR(5), CREATOR INT NOT NULL, CREATEDDATE TIMESTAMP NOT NULL)";
-		String sql32 = "CREATE TABLE PIN (PIN VARCHAR(15) PRIMARY KEY, JOBID INT)";
+		String sql32 = "CREATE TABLE PIN (PIN VARCHAR(15) PRIMARY KEY, SERIAL VARCHAR(15), STATUS VARCHAR(5), JOBID INT)";
 
 		String result = "";
 		try {
@@ -51,18 +55,21 @@ LOG.log(Level.INFO,"{0}-{1}",new Object[]{"Init","Start"});
 			con = ds.getConnection();
 			st1 = con.createStatement();
 			try {
+				if (!clean.isEmpty()) {st1.executeUpdate(sql01);result += "Drop USR\n";}
 				rs1 = st1.executeQuery(sql11);if (rs1 != null) {rs1.close();}
 			} catch (java.sql.SQLSyntaxErrorException e) {
 				result += "Not found USR\n";
 				st1.executeUpdate(sql12);
 			}
 			try {
+				if (!clean.isEmpty()) {st1.executeUpdate(sql02);result += "Drop JOB\n";}
 				rs1 = st1.executeQuery(sql21);if (rs1 != null) {rs1.close();}
 			} catch (java.sql.SQLSyntaxErrorException e) {
 				result += "Not found JOB\n";
 				st1.executeUpdate(sql22);
 			}
 			try {
+				if (!clean.isEmpty()) {st1.executeUpdate(sql03);result += "Drop PIN\n";}
 				rs1 = st1.executeQuery(sql31);if (rs1 != null) {rs1.close();}
 			} catch (java.sql.SQLSyntaxErrorException e) {
 				result += "Not found PIN\n";
@@ -78,7 +85,7 @@ LOG.log(Level.INFO,"{0}-{1}",new Object[]{"Init","Start"});
 		    	LOG.log(Level.WARNING, ex.getMessage(), ex);
 		    }
 		}
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"Init-result:\n",result});
+LOG.log(Level.INFO,"{0} {1}",new Object[]{"Init-result:\n",result});
 		response.getWriter().append("result:\n" + result);
 	}
 
