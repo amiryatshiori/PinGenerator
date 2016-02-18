@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,10 +24,28 @@ public class Init extends HttpServlet {
     public Init() {
         super();
     }
+    
+/*
+CONNECT 'jdbc:derby:PinGen;create=true';
+CONNECT 'jdbc:derby:PinGen';
 
+//status: I = initial, P = processing, S = success, F = fail
+
+//CREATE TABLE JOB (JOBID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
+//PINDIGIT INT, PINAMOUNT BIGINT, STATUS VARCHAR(1), CREATOR INT NOT NULL, CREATEDDATE TIMESTAMP NOT NULL,
+//CONSTRAINT primary_key PRIMARY KEY (JOBID));
+
+INSERT INTO USR VALUES (1, 'Administrator', 'ADMIN', 'admin', 1, CURRENT_TIMESTAMP);
+
+SELECT pin, COUNT(*) FROM PIN GROUP BY pin HAVING COUNT(*) > 1;
+
+*/
+    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Logger LOG = Logger.getLogger(JobList.class.getName());
+		Logger LOG = Logger.getLogger(Init.class.getName());
         request.setCharacterEncoding(Utils.CharacterEncoding);
+        String s = request.getParameter("s");
+        if (s == null) {throw new IllegalArgumentException("Wrong argument!!");}
         String clean = request.getParameter("clean");
         if (clean == null) {clean = "";}
 LOG.log(Level.INFO,"{0} {1}",new Object[]{"Init","Start"});  
@@ -36,14 +53,14 @@ LOG.log(Level.INFO,"{0} {1}",new Object[]{"Init","Start"});
 		Connection con = null;
 		Statement st1 = null;
 		ResultSet rs1 = null;
-		
+
 		String sql01 = "DROP TABLE USR";
 		String sql02 = "DROP TABLE JOB";
 		String sql03 = "DROP TABLE PIN";
 		String sql032 = "DROP TABLE PINHIST";
 		String sql04 = "DROP TABLE SERIAL";
 		String sql05 = "DROP TABLE PATTERN";
-		
+
 		String sql11 = "SELECT * FROM USR";
 		String sql12 = "SELECT * FROM JOB";
 		String sql13 = "SELECT * FROM PIN";
@@ -51,15 +68,16 @@ LOG.log(Level.INFO,"{0} {1}",new Object[]{"Init","Start"});
 		String sql14 = "SELECT * FROM SERIAL";
 		String sql15 = "SELECT * FROM PATTERN";
 		
-		String sql21 = "CREATE TABLE USR (USERID INT NOT NULL PRIMARY KEY, NAME VARCHAR(80), USERNAME VARCHAR(40), PASSWORD VARCHAR(40), CREATOR INT NOT NULL, CREATEDDATE TIMESTAMP NOT NULL)";
-		String sql22 = "CREATE TABLE JOB (JOBID VARCHAR(12) NOT NULL PRIMARY KEY, TYPE VARCHAR(5), DIGIT INT, AMOUNT BIGINT, STATUS VARCHAR(5), DESC1 VARCHAR(200), DESC2 VARCHAR(200), CREATOR INT NOT NULL, CREATEDDATE TIMESTAMP NOT NULL)";
-		String sql23 = "CREATE TABLE PIN (PIN VARCHAR(15) PRIMARY KEY, SERIAL VARCHAR(15), STATUS VARCHAR(5), JCID INT, JMID INT)";
-		String sql232 = "CREATE TABLE PINHIST (PHID BIGINT PRIMARY KEY, PIN VARCHAR(15), SERIAL VARCHAR(15), STATUS VARCHAR(5), USERID INT NOT NULL, UPDATEDDATE TIMESTAMP NOT NULL)";
-		String sql24 = "CREATE TABLE SERIAL (SERIAL VARCHAR(15) PRIMARY KEY, JOBID INT)";
-		String sql25 = "CREATE TABLE PATTERN (PATTERNID INT, CHANNEL VARCHAR(10), DIGIT INT, CREATOR INT NOT NULL, CREATEDDATE TIMESTAMP NOT NULL)";
+		String sql21 = "CREATE TABLE USR (USERID INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), NAME VARCHAR(80), USERNAME VARCHAR(40), PASSWORD VARCHAR(40), UPDATEDBY INT NOT NULL, UPDATEDDATE TIMESTAMP NOT NULL)";
+		String sql22 = "CREATE TABLE JOB (JOBID VARCHAR(12) PRIMARY KEY, TYPE VARCHAR(5), DIGIT INT, AMOUNT BIGINT, STATUS VARCHAR(5), DESC1 VARCHAR(200), DESC2 VARCHAR(200), UPDATEDBY INT NOT NULL, UPDATEDDATE TIMESTAMP NOT NULL)";
+		String sql23 = "CREATE TABLE PIN (PIN VARCHAR(15) PRIMARY KEY, SERIAL VARCHAR(15), STATUS VARCHAR(5), JOBID VARCHAR(12), UPDATEDBY INT NOT NULL, UPDATEDDATE TIMESTAMP NOT NULL)";
+		String sql232 = "CREATE TABLE PINHIST (PHID BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), PIN VARCHAR(15), SERIAL VARCHAR(15), STATUS VARCHAR(5), JOBID VARCHAR(12), UPDATEDBY INT NOT NULL, UPDATEDDATE TIMESTAMP NOT NULL)";
+		String sql233 = "CREATE TRIGGER ";
+		String sql24 = "CREATE TABLE SERIAL (SERIAL VARCHAR(15) PRIMARY KEY, PATTERNID INT, STATUS VARCHAR(5),JOBID VARCHAR(12), UPDATEDBY INT NOT NULL, UPDATEDDATE TIMESTAMP NOT NULL)";
+		String sql25 = "CREATE TABLE PATTERN (PATTERNID INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), CHANNEL VARCHAR(10), DIGIT INT, UPDATEDBY INT NOT NULL, UPDATEDDATE TIMESTAMP NOT NULL)";
 
 
-		String result = "Do nothing";
+		String result = "";
 		try {
 			Context ctx = new InitialContext();
 			DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/PinGen");
@@ -86,6 +104,13 @@ LOG.log(Level.INFO,"{0} {1}",new Object[]{"Init","Start"});
 				result += "Create PIN\n";
 				st1.executeUpdate(sql23);
 			}
+				try {
+					if (!clean.isEmpty()) {st1.executeUpdate(sql032);result += "Drop PINHIST\n";}
+					rs1 = st1.executeQuery(sql132);if (rs1 != null) {rs1.close();}
+				} catch (java.sql.SQLSyntaxErrorException e) {
+					result += "Create PINHIST\n";
+					st1.executeUpdate(sql232);
+				}
 			try {
 				if (!clean.isEmpty()) {st1.executeUpdate(sql04);result += "Drop SERIAL\n";}
 				rs1 = st1.executeQuery(sql14);if (rs1 != null) {rs1.close();}
@@ -100,7 +125,8 @@ LOG.log(Level.INFO,"{0} {1}",new Object[]{"Init","Start"});
 				result += "Create PATTERN\n";
 				st1.executeUpdate(sql25);
 			}
-		} catch(NamingException | SQLException ex) {
+			if (result.isEmpty()) {result = "Do nothing\n";}
+		} catch(Exception ex) {        //} catch(NamingException | SQLException ex) {
 			LOG.log(Level.SEVERE, ex.getMessage(), ex);
 		} finally {
 		    try {
