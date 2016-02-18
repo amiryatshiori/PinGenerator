@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,31 +43,28 @@ public class PinGenBatch extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		String userId = (String)session.getAttribute("userId");
 		
-LOG.log(Level.INFO,"queryString:{0}",new Object[]{userId + " " + pinDigit + " " + pinAmount});
+		SimpleDateFormat dFormat = new SimpleDateFormat("yyMMddhhmmss");
+		String jobId = dFormat.format(new Date());
 		
+LOG.log(Level.INFO,"userId:{0} pinDigit:{1} pinAmount:{2} jobId:{3}",new Object[]{userId,pinDigit,pinAmount,jobId});
+
+
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
-		String sql ="select max(jobid) maxid from job";
-		String sql2 = "insert into job (JOBID,PINDIGIT,PINAMOUNT,STATUS,CREATOR,CREATEDDATE) values (jobId," + pinDigit + "," + pinAmount + ",'I',"+ userId + ",CURRENT_TIMESTAMP)";
+		String sql = "insert into job (JOBID,DIGIT,AMOUNT,STATUS,CREATOR,CREATEDDATE) values ('" + jobId + "'," + pinDigit + "," + pinAmount + ",'I',"+ userId + ",CURRENT_TIMESTAMP)";
 
 		String result="failed";
-		int jobId = 1;
+
+		
 		try {
 			Context ctx = new InitialContext();
 			DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/PinGen");
 
 			con = ds.getConnection();
 			st = con.createStatement();
-			rs = st.executeQuery(sql);
-			if (rs.next()) {
-				jobId = rs.getInt("maxid");
-				jobId++;
-			}
-            if (rs != null) {rs.close();}
-            sql2 = sql2.replaceAll("jobId", Integer.toString(jobId));
-LOG.log(Level.INFO,"sql2:{0}",new Object[]{sql2});
-			st.executeUpdate(sql2);
+LOG.log(Level.INFO,"sql:{0}",new Object[]{sql});
+			st.executeUpdate(sql);
 			result = "succeed";
 		} catch(NamingException | SQLException ex) {
 LOG.log(Level.SEVERE, ex.getMessage(), ex);

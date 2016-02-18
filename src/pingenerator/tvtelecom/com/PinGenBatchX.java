@@ -40,14 +40,14 @@ LOG.log(Level.INFO,"{0} {1}",new Object[]{"PinGenBatchX-jobId: ",jobId});
         
 		Connection con = null;
 		Statement st1 = null;
-		String sql1 ="select * from job where status = 'I' and jobid = " + jobId;
+		String sql1 ="select * from job where status = 'I' and jobid = '" + jobId + "'";
 		ResultSet rs1 = null;
 		
 		PreparedStatement st2 = null;
-		String sql2 = "insert into pin values (?,"+jobId+")";
+		String sql2 = "insert into pin values (?,'"+jobId+"')";
 		
 		Statement st3 = null;
-		String sql3 = "update job set status = '_status' where jobid = " + jobId;
+		String sql3 = "update job set status = '_status' where jobid = '" + jobId + "'";
 		String sql3r = "";
 		
 		String result="failed";
