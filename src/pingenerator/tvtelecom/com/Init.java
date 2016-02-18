@@ -57,7 +57,7 @@ LOG.log(Level.INFO,"{0} {1}",new Object[]{"Init","Start"});
 		String sql01 = "DROP TABLE USR";
 		String sql02 = "DROP TABLE JOB";
 		String sql03 = "DROP TABLE PIN";
-		String sql032 = "DROP TABLE PINHIST";
+		String sql032 = "DROP TABLE PINHIST"; 
 		String sql04 = "DROP TABLE SERIAL";
 		String sql05 = "DROP TABLE PATTERN";
 
@@ -72,7 +72,7 @@ LOG.log(Level.INFO,"{0} {1}",new Object[]{"Init","Start"});
 		String sql22 = "CREATE TABLE JOB (JOBID VARCHAR(12) PRIMARY KEY, TYPE VARCHAR(5), DIGIT INT, AMOUNT BIGINT, STATUS VARCHAR(5), DESC1 VARCHAR(200), DESC2 VARCHAR(200), UPDATEDBY INT NOT NULL, UPDATEDDATE TIMESTAMP NOT NULL)";
 		String sql23 = "CREATE TABLE PIN (PIN VARCHAR(15) PRIMARY KEY, SERIAL VARCHAR(15), STATUS VARCHAR(5), JOBID VARCHAR(12), UPDATEDBY INT NOT NULL, UPDATEDDATE TIMESTAMP NOT NULL)";
 		String sql232 = "CREATE TABLE PINHIST (PHID BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), PIN VARCHAR(15), SERIAL VARCHAR(15), STATUS VARCHAR(5), JOBID VARCHAR(12), UPDATEDBY INT NOT NULL, UPDATEDDATE TIMESTAMP NOT NULL)";
-		String sql233 = "CREATE TRIGGER ";
+		String sql233 = "CREATE TRIGGER PIN_U AFTER UPDATE ON PIN FOR EACH ROW REFERENCING OLD AS OLD FOR EACH ROW MODE DB2SQL INSERT INTO PINHIST (PIN, SERIAL, STATUS, JOBID, UPDATEDBY, UPDATEDDATE) VALUES (OLD.PIN, OLD.SERIAL, OLD.STATUS, OLD.JOBID, OLD.UPDATEDBY, OLD.UPDATEDDATE)";
 		String sql24 = "CREATE TABLE SERIAL (SERIAL VARCHAR(15) PRIMARY KEY, PATTERNID INT, STATUS VARCHAR(5),JOBID VARCHAR(12), UPDATEDBY INT NOT NULL, UPDATEDDATE TIMESTAMP NOT NULL)";
 		String sql25 = "CREATE TABLE PATTERN (PATTERNID INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), CHANNEL VARCHAR(10), DIGIT INT, UPDATEDBY INT NOT NULL, UPDATEDDATE TIMESTAMP NOT NULL)";
 
@@ -84,7 +84,7 @@ LOG.log(Level.INFO,"{0} {1}",new Object[]{"Init","Start"});
 			con = ds.getConnection();
 			st1 = con.createStatement();
 			try {
-				if (!clean.isEmpty()) {st1.executeUpdate(sql01);result = "Drop USR\n";}
+				if (!clean.isEmpty()) {st1.executeUpdate(sql01);result += "Drop USR\n";}
 				rs1 = st1.executeQuery(sql11);if (rs1 != null) {rs1.close();}
 			} catch (java.sql.SQLSyntaxErrorException e) {
 				result += "Create USR\n";
@@ -111,6 +111,10 @@ LOG.log(Level.INFO,"{0} {1}",new Object[]{"Init","Start"});
 					result += "Create PINHIST\n";
 					st1.executeUpdate(sql232);
 				}
+				if (!clean.isEmpty()) {
+					result += "Create PIN_U\n";
+					st1.executeUpdate(sql233);
+				}
 			try {
 				if (!clean.isEmpty()) {st1.executeUpdate(sql04);result += "Drop SERIAL\n";}
 				rs1 = st1.executeQuery(sql14);if (rs1 != null) {rs1.close();}
@@ -136,7 +140,7 @@ LOG.log(Level.INFO,"{0} {1}",new Object[]{"Init","Start"});
 		    	LOG.log(Level.WARNING, ex.getMessage(), ex);
 		    }
 		}
-LOG.log(Level.INFO,"{0} {1}",new Object[]{"Init-result:\n",result});
+LOG.log(Level.INFO,"{0} {1}",new Object[]{"Init-result:\n",result.trim()});
 		response.getWriter().append("result:\n" + result);
 	}
 
