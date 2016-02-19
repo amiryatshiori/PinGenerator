@@ -160,10 +160,24 @@ function pinGenSpecButtonAddClick() {
 
 function pinGenSpecButtonConfirmClick() {
 	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Carousel_1','Ink.UI.ProgressBar_1'], function(Ajax,FormSerialize,InkElement,Carousel,ProgressBar) {
-	    var form = Ink.i('formPinGenSpec');
+	    var pinCount = Ink.i('pinCount');
+	    var pValue;var aPin = [];
+		for (var i = 1; i <= pinCount.value; i++) {
+			pValue = Ink.i('pin'+i).value;
+			if (pValue.match(/\S/)) {aPin.push(pValue);}
+		}
+		InkElement.setHTML(Ink.i('pinInput'),'');
+		pinCount.value = aPin.length;
+		for (var i = 0; i < aPin.length; i++) {
+			var pinInputHtml = '<div class="control-group column-group"><div class="control">';
+			pinInputHtml += '<input id="pin'+i+'" name="pin'+i+'" value="'+aPin[i]+'" style="width:15em;" type="text" placeholder="Specific Pin" maxlength="15" onkeypress=\'return (event.charCode >= 48 && event.charCode <= 57)\'>';
+			pinInputHtml += '</div><div id="pinSpin'+i+'" style="font-size:1.6em;margin-top:-.3em;margin-left:.8em"><i class="fa fa-cog fa-spin"></i></div>&nbsp;&nbsp;&nbsp;<div id="pinMsg'+i+'"></div></div>';
+			InkElement.appendHTML(Ink.i('pinInput'),pinInputHtml);
+			Ink.i('pin'+i).disabled = true;
+		}
+		var form = Ink.i('formPinGenSpec');
 	    var formData = FormSerialize.serialize(form);
 	    var pin = formData.pin;
-	    //Ink.i('pin').disabled = true;
 	    Ink.i('buttonAdd').disabled = true;Ink.i('buttonCancel').disabled = true;
 	    var uri = window.url_home + '/PinGenSpec';
 	    new Ajax(uri, {
@@ -174,19 +188,38 @@ function pinGenSpecButtonConfirmClick() {
 	            	var result = obj.responseJSON['result'];var jobId = obj.responseJSON['jobId'];
 Ink.log("result: " + result);Ink.log("jobId: " + jobId);
 					if(result==="succeed"){
-						pinGenSpecAdd();
+						for (var i = 0; i < aPin.length; i++) {
+							var uri = window.url_home + '/PinGenSpecX?pin='+aPin[i]+'&pinId='+i+'&jobId='+jobId;
+						    new Ajax(uri, {
+						        method: 'GET',
+						        onSuccess: function(obj) {
+						            if(obj && obj.responseJSON) {
+						            	var result = obj.responseJSON['result'];var pinId = obj.responseJSON['pinId'];
+				Ink.log("result: " + result);Ink.log("pinId: " + pinId);
+										if(result==="duplicated"){
+											InkElement.setHTML(Ink.i('pinSpin'+pinId),'<i class="fa fa-times-circle" style="color:red"></i>');
+											InkElement.setHTML(Ink.i('pinMsg'+pinId),'<div class="ink-label red" style="font-size:.5em;height:1.8em;margin-top:1.4em;">Duplicated PIN</div>');
+										} else if(result==="succeed"){
+											InkElement.setHTML(Ink.i('pinSpin'+pinId),'<i class="fa fa-check-circle" style="color:green"></i>');
+										} else {
+											InkElement.setHTML(Ink.i('pinSpin'+pinId),'<i class="fa fa-times-circle" style="color:red"></i>');
+										}
+						            }
+						        }, 
+						        onFailure: function() {result="failed on network!"
+				Ink.log("result: " + result);
+						        	InkElement.setHTML(Ink.i('pinSpin'+i),'<i class="fa fa-times-circle" style="color:red">Network</i>');
+						        }
+						    });
+						}
 					}
 	            }
 	        }, 
 	        onFailure: function() {result="failed on network!"
-	Ink.log("result: " + result);
+Ink.log("result: " + result);
 	        }
 	    });
 	});
-}
-
-function pinGenSpecAdd() {
-	
 }
 
 function pinExportButtonExportClick() {
