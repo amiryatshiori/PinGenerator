@@ -165,16 +165,16 @@ function pinGenSpecButtonConfirmClick() {
 	    var pin = formData.pin;
 	    //Ink.i('pin').disabled = true;
 	    Ink.i('buttonAdd').disabled = true;Ink.i('buttonCancel').disabled = true;
-	    var uri = window.url_home + '/PinGenSpecAdd';
+	    var uri = window.url_home + '/PinGenSpec';
 	    new Ajax(uri, {
 	        method: 'POST',
 	        postBody: formData,
 	        onSuccess: function(obj) {
 	            if(obj && obj.responseJSON) {
 	            	var result = obj.responseJSON['result'];var jobId = obj.responseJSON['jobId'];
-	Ink.log("result: " + result);Ink.log("jobId: " + jobId);
+Ink.log("result: " + result);Ink.log("jobId: " + jobId);
 					if(result==="succeed"){
-
+						pinGenSpecAdd();
 					}
 	            }
 	        }, 
@@ -183,6 +183,10 @@ function pinGenSpecButtonConfirmClick() {
 	        }
 	    });
 	});
+}
+
+function pinGenSpecAdd() {
+	
 }
 
 function pinExportButtonExportClick() {

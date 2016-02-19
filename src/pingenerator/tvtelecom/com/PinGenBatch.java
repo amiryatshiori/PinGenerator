@@ -52,8 +52,8 @@ LOG.log(Level.INFO,"userId:{0} pinDigit:{1} pinAmount:{2} jobId:{3}",new Object[
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
-		String sql = "insert into job (JOBID,DIGIT,AMOUNT,STATUS,CREATOR,CREATEDDATE) values ('" + jobId + "'," + pinDigit + "," + pinAmount + ",'I',"+ userId + ",CURRENT_TIMESTAMP)";
-
+		String sql = "insert into job (JOBID,TYPE,DIGIT,AMOUNT,STATUS,UPDATEDBY,UPDATEDDATE) values ('" + jobId + "','PG'," + pinDigit + "," + pinAmount + ",'I',"+ userId + ",CURRENT_TIMESTAMP)";
+		
 		String result="failed";
 
 		
@@ -83,8 +83,8 @@ LOG.log(Level.WARNING, ex.getMessage(), ex);
 		if (!result.equals("failed")) {
 			URLConnection urlcon;
 			try {
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"test",request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/PinGenerator/"+"PinGenBatchX?jobId="+jobId});
-				URL url = new URL(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/PinGenerator/"+"PinGenBatchX?jobId="+jobId);
+LOG.log(Level.INFO,"{0}-{1}",new Object[]{"test",request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/PinGenerator/"+"PinGenBatchX?jobId="+jobId+"&userId="+userId});
+				URL url = new URL(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/PinGenerator/"+"PinGenBatchX?jobId="+jobId+"&userId="+userId);
 				urlcon = url.openConnection();
 				urlcon.setConnectTimeout(100);
 				urlcon.setReadTimeout(100);

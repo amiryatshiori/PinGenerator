@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,60 +19,65 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-@WebServlet("/PinGenBatchCount")
-public class PinGenBatchCount extends HttpServlet {
+@WebServlet("/PinGenSpec")
+public class PinGenSpec extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public PinGenBatchCount() {
+    public PinGenSpec() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Logger LOG = Logger.getLogger(PinGenBatchCount.class.getName());
-        request.setCharacterEncoding(Utils.CharacterEncoding);    
-        String jobId = request.getParameter("jobId");
+        Logger LOG = Logger.getLogger(PinGenSpec.class.getName());
+        request.setCharacterEncoding(Utils.CharacterEncoding);
+        int pinCount = Integer.parseInt(request.getParameter("pinCount"));
         
-LOG.log(Level.INFO,"{0} {1}",new Object[]{"PinGenBatchCount-jobId: ",jobId});
+		HttpSession session = request.getSession(true);
+		String userId = (String)session.getAttribute("userId");
+		
+		SimpleDateFormat dFormat = new SimpleDateFormat("yyMMddhhmmss");
+		String jobId = dFormat.format(new Date());
+		
+LOG.log(Level.INFO,"userId:{0} pinCount:{1} jobId:{2}",new Object[]{userId,pinCount,jobId});
 
 		Connection con = null;
-		Statement st1 = null;
-		String sql1 ="select count(*) c from pin where jobid = '" + jobId + "'";
-		ResultSet rs1 = null;
+		Statement st = null;
+		ResultSet rs = null;
+		String sql = "insert into job (JOBID,TYPE,AMOUNT,STATUS,UPDATEDBY,UPDATEDDATE) values ('" + jobId + "','PS'," + pinCount + ",'I',"+ userId + ",CURRENT_TIMESTAMP)";
 		
 		String result="failed";
-		long c=0;
+		
 		try {
 			Context ctx = new InitialContext();
 			DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/PinGen");
+
 			con = ds.getConnection();
-			st1 = con.createStatement();
-			rs1 = st1.executeQuery(sql1);
-			if (rs1.next()) {
-				result="failed";
-				c = rs1.getLong("c");
-				result = "succeed";
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"PinGenBatchCount","count: "+c});
-			}
+			st = con.createStatement();
+LOG.log(Level.INFO,"sql:{0}",new Object[]{sql});
+			st.executeUpdate(sql);
+			result = "succeed";
 		} catch(NamingException | SQLException ex) {
-			LOG.log(Level.SEVERE, ex.getMessage(), ex);
+LOG.log(Level.SEVERE, ex.getMessage(), ex);
 			result = "failed";
 		} finally {
-            try {
-                if (rs1 != null) {rs1.close();}if (st1 != null) {st1.close();}
-                if (con != null) {con.close();}
-            } catch (SQLException ex) {
-            	LOG.log(Level.WARNING, ex.getMessage(), ex);
-            }
+		    try {
+		    	if (rs != null) {rs.close();}
+		        if (st != null) {st.close();}
+		        if (con != null) {con.close();}
+		    } catch (SQLException ex) {
+LOG.log(Level.WARNING, ex.getMessage(), ex);
+				result = "failed";
+		    }
 		}
 
 		response.setContentType("application/json");
 		response.setCharacterEncoding(Utils.CharacterEncoding);
 		PrintWriter out = response.getWriter();
-		out.print("{\"result\":\""+result+"\",\"jobId\":"+jobId+",\"count\":"+c+"}");
+		out.print("{\"result\":\""+result+"\",\"jobId\":"+jobId+"}");
 		out.flush();
-
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

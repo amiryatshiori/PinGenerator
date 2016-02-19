@@ -31,11 +31,11 @@ public class PinGenBatchX extends HttpServlet {
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
         Logger LOG = Logger.getLogger(PinGenBatchX.class.getName());
         request.setCharacterEncoding(Utils.CharacterEncoding);    
         String jobId = request.getParameter("jobId");
-        
+        String userId = request.getParameter("userId");
+		
 LOG.log(Level.INFO,"{0} {1}",new Object[]{"PinGenBatchX-jobId: ",jobId});
         
 		Connection con = null;
@@ -44,39 +44,35 @@ LOG.log(Level.INFO,"{0} {1}",new Object[]{"PinGenBatchX-jobId: ",jobId});
 		ResultSet rs1 = null;
 		
 		PreparedStatement st2 = null;
-		String sql2 = "insert into pin values (?,'"+jobId+"')";
+		String sql2 = "insert into pin (PIN,STATUS,JOBID,UPDATEDBY,UPDATEDDATE) values (?,'A','"+jobId+"',"+userId+",CURRENT_TIMESTAMP)";
 		
 		Statement st3 = null;
-		String sql3 = "update job set status = '_status' where jobid = '" + jobId + "'";
+		String sql3 = "update job set status = '_status', dupcount = _ratio where jobid = '" + jobId + "'";
 		String sql3r = "";
 		
 		String result="failed";
 		try {
 			Context ctx = new InitialContext();
 			DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/PinGen");
-		
-			//int JOBID;
+
 			int pinDigit; 
 			long pinAmount;
-			//String status;
-			//int creatorId;
 
 			con = ds.getConnection();
 			st1 = con.createStatement();
 			rs1 = st1.executeQuery(sql1);
 			if (rs1.next()) {
 				result="failed";
-				//JOBID = rs1.getInt("JOBID");
-				pinDigit = rs1.getInt("PINDIGIT");
-				pinAmount = rs1.getLong("PINAMOUNT");
-				//status = rs1.getString("STATUS");
-				//creatorId = rs1.getInt("CREATOR");
+				pinDigit = rs1.getInt("DIGIT");
+				pinAmount = rs1.getLong("AMOUNT");
 				boolean dup;
 
 	            sql3r = sql3.replaceAll("_status", "P");
+	            sql3r = sql3r.replaceAll("_ratio", Long.toString(0));
 				st3 = con.createStatement();
 				st3.executeUpdate(sql3r);
 
+LOG.log(Level.INFO,"{0} {1}",new Object[]{"PinGenBatchX","sql2: " + sql2});
 				st2 = con.prepareStatement(sql2);
 				long c = 0;
 	            for (long i = 1; i <= pinAmount; i++) {
@@ -95,6 +91,7 @@ LOG.log(Level.INFO,"{0}-{1}",new Object[]{"PinGenBatchX","found duplicated pin w
 	            //st2.executeBatch();
 	            
 	            sql3r = sql3.replaceAll("_status", "S");
+	            sql3r = sql3r.replaceAll("_ratio", Long.toString(c));
 				//st3 = con.createStatement();
 				st3.executeUpdate(sql3r);
 				result = "succeed";
