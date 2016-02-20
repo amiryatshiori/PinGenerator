@@ -20,6 +20,18 @@ function menuPinGenSpecific() {
 	});
 }
 
+function menuMapSerial() {
+	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1'], function(Ajax,InkElement) {
+		var container = Ink.i('main-panel');
+		Ajax.load('serial-map.html', function (res) {
+		    InkElement.setHTML(container,res);
+		});
+		Ajax.load('SerialMapPatternDropdown', function (res) {
+	    	InkElement.setHTML(Ink.i('serialPattern'),res);
+		});
+	});
+}
+
 function menuPinExport() {
 	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1'], function(Ajax,InkElement) {
 		var container = Ink.i('main-panel');
@@ -141,10 +153,16 @@ Ink.log("result: " + result);
 	});
 }
 
-function pinGenSpecButtonPlusClick() {
+function pinGenSpecButtonPlusClick(rowMore) {
 	Ink.requireModules(['Ink.Dom.Element_1'], function(InkElement) {
-		var stacker = Ink.i('pinGenSpecStack');
-		InkElement.appendHTML(stacker,'<div class="ink-alert basic info"><b>A - 1</b></div>');
+		var pinCount = Ink.i('pinCount').value;
+		pinCountNew = pinCount + rowMore;
+		for (var i = pinCount+1; i <= pinCountNew; i++) {
+			var pinInputHtml = '<div class="control-group column-group"><div class="control">';
+			pinInputHtml += '<input id="pin'+i+'" name="pin'+i+'" style="width:15em;" type="text" placeholder="Specific Pin" maxlength="15" onkeypress=\'return (event.charCode >= 48 && event.charCode <= 57)\'>';
+			pinInputHtml += '</div><div id="pinSpin'+i+'" style="font-size:1.6em;margin-top:-.3em;margin-left:.8em"></div></div>';
+			InkElement.appendHTML(Ink.i('pinInput'),pinInputHtml);
+		}
 	});
 }
 
@@ -177,9 +195,8 @@ function pinGenSpecButtonConfirmClick() {
 		}
 		var form = Ink.i('formPinGenSpec');
 	    var formData = FormSerialize.serialize(form);
-	    var pin = formData.pin;
 	    Ink.i('buttonAdd').disabled = true;Ink.i('buttonCancel').disabled = true;
-	    var uri = window.url_home + '/PinGenSpec';
+	    var uri = window.url_home + '/PinGenSpec?s=P';
 	    new Ajax(uri, {
 	        method: 'POST',
 	        postBody: formData,
@@ -212,11 +229,74 @@ Ink.log("result: " + result);Ink.log("jobId: " + jobId);
 						        }
 						    });
 						}
+
+					    var uri = window.url_home + '/PinGenSpec?s=S&jobid='+jobId;
+					    new Ajax(uri, {
+					        method: 'POST',
+					        postBody: formData,
+					        onSuccess: function(obj) {
+					            if(obj && obj.responseJSON) {
+					            	var result = obj.responseJSON['result'];var jobId = obj.responseJSON['jobId'];
+Ink.log("result: " + result);Ink.log("jobId: " + jobId);
+									if(result==="succeed"){
+										InkElement.setHTML(Ink.i('pinGenSpecButton'),'<div class="push-left"><button class="ink-button" onclick="goHome()">&nbsp;&nbsp;&nbsp;Close&nbsp;&nbsp;&nbsp;</button></div>');
+										InkElement.remove('pinGenSpecPlus');InkElement.remove('pinGenSpecPlus');
+									}
+								}
+				            }, 
+				            onFailure: function() {result="failed on network!";
+Ink.log("result: " + result);
+				            }
+					    });
+					}
+	            }
+	        }, 
+	        onFailure: function() {result="failed on network!";
+Ink.log("result: " + result);
+	        }
+	    });
+	});
+}
+
+function serialMapButtonMapClick() {
+	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1'], function(Ajax,FormSerialize,InkElement,Modal) {
+	    var form = Ink.i('formSerialMap');
+	    var pat = Ink.i('serialPattern');
+        var formData = FormSerialize.serialize(form);
+        
+        //InkElement.setHTML(Ink.i('serialMapPatternConfirm'),'Pattern: <b style="color:red">' + formData.serialPattern + '</b>');
+        InkElement.setHTML(Ink.i('serialMapPatternConfirm'),'Pattern: <b style="color:red">' + pat.options[pat.selectedIndex].text + '</b>');
+		InkElement.setHTML(Ink.i('serialMapPinAmountConfirm'),'Pin Amount: <b style="color:red">' + formData.pinAmount + '</b>');
+		var modalPinGenBatch = new Modal('#formSerialMapConfirm');
+		modalPinGenBatch.open(); 
+	});
+}
+
+function serialMapButtonConfirmClick() {
+	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Carousel_1','Ink.UI.ProgressBar_1'], function(Ajax,FormSerialize,InkElement,Carousel,ProgressBar) {
+	    var form = Ink.i('formSerialMap');
+	    var formData = FormSerialize.serialize(form);
+	    var pinAmount = formData.pinAmount;
+	    Ink.i('serialPattern').disabled = true;Ink.i('pinAmount').disabled = true;
+	    Ink.i('buttonMap').disabled = true;Ink.i('buttonCancel').disabled = true;
+	    var uri = window.url_home + '/SerialMap';
+	    new Ajax(uri, {
+	        method: 'POST',
+	        postBody: formData,
+	        onSuccess: function(obj) {
+	            if(obj && obj.responseJSON) {
+	            	var result = obj.responseJSON['result'];var jobId = obj.responseJSON['jobId'];
+	Ink.log("result: " + result);Ink.log("jobId: " + jobId);
+					if(result==="succeed"){
+						var crs = new Carousel('#pinGenBatchCarousel');crs.nextPage();
+						InkElement.setHTML(Ink.i('pinGenBatchJobId'),'Job ID: <b style="color:red">' + jobId + '</b>');
+						var probar = probar = new ProgressBar('#pinGenBatchProgressBar');
+						setTimeout(function(){pinGenBatchUpdateProgress(probar,jobId,pinAmount);},2000);
 					}
 	            }
 	        }, 
 	        onFailure: function() {result="failed on network!"
-Ink.log("result: " + result);
+	Ink.log("result: " + result);
 	        }
 	    });
 	});

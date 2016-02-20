@@ -2,6 +2,9 @@ package pingenerator.tvtelecom.com;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,36 +25,35 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-@WebServlet("/PinGenSpec")
-public class PinGenSpec extends HttpServlet {
+@WebServlet("/SerialMap")
+public class SerialMap extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public PinGenSpec() {
+    public SerialMap() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Logger LOG = Logger.getLogger(PinGenSpec.class.getName());
-        request.setCharacterEncoding(Utils.CharacterEncoding);
-        int pinCount = Integer.parseInt(request.getParameter("pinCount"));
-        String status = request.getParameter("s");
-        String jobId = request.getParameter("jobid");
-        
+        Logger LOG = Logger.getLogger(SerialMap.class.getName());
+        request.setCharacterEncoding(Utils.CharacterEncoding);       
+        String serialPattern = request.getParameter("serialPattern");
+        String pinAmount = request.getParameter("pinAmount");
+
+
 		HttpSession session = request.getSession(true);
 		String userId = (String)session.getAttribute("userId");
 		
-		if (status.equals("P")) {
-			SimpleDateFormat dFormat = new SimpleDateFormat("yyMMddhhmmss");
-			jobId = dFormat.format(new Date());
-		}
+		SimpleDateFormat dFormat = new SimpleDateFormat("yyMMddhhmmss");
+		String jobId = dFormat.format(new Date());
 		
-LOG.log(Level.INFO,"userId:{0} pinCount:{1} jobId:{2}",new Object[]{userId,pinCount,jobId});
+LOG.log(Level.INFO,"userId:{0} serialPattern:{1} pinAmount:{2} jobId:{3}",new Object[]{userId,serialPattern,pinAmount,jobId});
+
 
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
-		String sql = "insert into job (JOBID,TYPE,AMOUNT,STATUS,UPDATEDBY,UPDATEDDATE) values ('" + jobId + "','PS'," + pinCount + ",'P',"+ userId + ",CURRENT_TIMESTAMP)";
-		if (status.equals("S")) {sql = "UPDATE job SET STATUS = 'S' WHERE jobid = '"+jobId+"'";}
+		String sql = "insert into job (JOBID,TYPE,DIGIT,AMOUNT,STATUS,UPDATEDBY,UPDATEDDATE) values ('" + jobId + "','SM'," + serialPattern + "," + pinAmount + ",'I',"+ userId + ",CURRENT_TIMESTAMP)";
+		
 		String result="failed";
 		
 		try {
@@ -75,6 +77,24 @@ LOG.log(Level.SEVERE, ex.getMessage(), ex);
 LOG.log(Level.WARNING, ex.getMessage(), ex);
 				result = "failed";
 		    }
+		}
+
+		if (!result.equals("failed")) {
+			URLConnection urlcon;
+			try {
+LOG.log(Level.INFO,"{0}-{1}",new Object[]{"test",request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/PinGenerator/"+"PinGenBatchX?jobId="+jobId+"&userId="+userId});
+				URL url = new URL(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/PinGenerator/"+"PinGenBatchX?jobId="+jobId+"&userId="+userId);
+				urlcon = url.openConnection();
+				urlcon.setConnectTimeout(100);
+				urlcon.setReadTimeout(100);
+LOG.log(Level.INFO,"{0}-{1}",new Object[]{"call PinGenBatchX",urlcon.getDate()});
+			} catch (MalformedURLException e) { 
+				LOG.log(Level.SEVERE, e.getMessage(), e);
+				result = "failed";
+			} catch (IOException e) {
+				LOG.log(Level.SEVERE, e.getMessage(), e);
+				result = "failed";
+			}
 		}
 
 		response.setContentType("application/json");
