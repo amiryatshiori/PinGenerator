@@ -11,8 +11,8 @@ public class Utils {
     public static String CharacterEncoding = "UTF-8";
     public static String DbPath = System.getProperty("catalina.base") + "/PinGen";
     public static String ExportFilePath = System.getProperty("catalina.base") + "/Exports";
-    
-    
+    public static String appPath = "/PinGenerator/";
+    //public static String appPath = "/";
     
     
     public static String csvFileForProvince = "/Single/SingleData/province.csv";

@@ -34,13 +34,14 @@ public class SerialMapPatternDropdown extends HttpServlet {
         
 		Connection con = null;
 		Statement st1 = null;
-		String sql1 ="select * from pattern";
+		String sql1 ="select * from pattern order by channel";
 		ResultSet rs1 = null;
 		
 		String result="failed";
 		int PATTERNID;
 		String CHANNEL;
 		int DIGIT;
+		int PINDIGIT;
 		String selectString = "";
 		try {
 			Context ctx = new InitialContext();
@@ -52,7 +53,8 @@ public class SerialMapPatternDropdown extends HttpServlet {
 				PATTERNID = rs1.getInt("PATTERNID");
 				CHANNEL = rs1.getString("CHANNEL");
 				DIGIT = rs1.getInt("DIGIT");
-				selectString += "<option value='"+PATTERNID+"'>"+CHANNEL+" + "+DIGIT+" digits</option>";
+				PINDIGIT = rs1.getInt("PINDIGIT");
+				selectString += "<option value='"+PATTERNID+"'>"+CHANNEL+" + "+DIGIT+" digits; pin "+PINDIGIT+" digits</option>";
 			}
 			result = "succeed";
 		} catch(NamingException | SQLException ex) {

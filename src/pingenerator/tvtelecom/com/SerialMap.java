@@ -52,7 +52,8 @@ LOG.log(Level.INFO,"userId:{0} serialPattern:{1} pinAmount:{2} jobId:{3}",new Ob
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
-		String sql = "insert into job (JOBID,TYPE,DIGIT,AMOUNT,STATUS,UPDATEDBY,UPDATEDDATE) values ('" + jobId + "','SM'," + serialPattern + "," + pinAmount + ",'I',"+ userId + ",CURRENT_TIMESTAMP)";
+		String sql0 = "SELECT * FROM PATTERN WHERE PATTERNID = "+serialPattern;
+		String sql = "insert into job (JOBID,TYPE,DIGIT,AMOUNT,SERIALPATTERN,STATUS,UPDATEDBY,UPDATEDDATE) values ('" + jobId + "','SM',_DIGIT," + pinAmount + ","+serialPattern+",'I',"+ userId + ",CURRENT_TIMESTAMP)";
 		
 		String result="failed";
 		
@@ -62,9 +63,17 @@ LOG.log(Level.INFO,"userId:{0} serialPattern:{1} pinAmount:{2} jobId:{3}",new Ob
 
 			con = ds.getConnection();
 			st = con.createStatement();
+LOG.log(Level.INFO,"sql0:{0}",new Object[]{sql0});
+			rs = st.executeQuery(sql0);
+			if (rs.next()) {
+				//String CHANNEL = rs.getString("CHANNEL");
+				int DIGIT = rs.getInt("DIGIT");
+				//int PINDIGIT = rs.getInt("PINDIGIT");
+				sql = sql.replaceAll("_DIGIT", Integer.toString(DIGIT));
 LOG.log(Level.INFO,"sql:{0}",new Object[]{sql});
-			st.executeUpdate(sql);
-			result = "succeed";
+				st.executeUpdate(sql);
+				result = "succeed";
+			}
 		} catch(NamingException | SQLException ex) {
 LOG.log(Level.SEVERE, ex.getMessage(), ex);
 			result = "failed";
@@ -82,12 +91,12 @@ LOG.log(Level.WARNING, ex.getMessage(), ex);
 		if (!result.equals("failed")) {
 			URLConnection urlcon;
 			try {
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"test",request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/PinGenerator/"+"PinGenBatchX?jobId="+jobId+"&userId="+userId});
-				URL url = new URL(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/PinGenerator/"+"PinGenBatchX?jobId="+jobId+"&userId="+userId);
+LOG.log(Level.INFO,"{0}-{1}",new Object[]{"call SerialMapX",request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+Utils.appPath+"SerialMapX?jobId="+jobId+"&userId="+userId});
+				URL url = new URL(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+Utils.appPath+"SerialMapX?jobId="+jobId+"&userId="+userId);
 				urlcon = url.openConnection();
 				urlcon.setConnectTimeout(100);
 				urlcon.setReadTimeout(100);
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"call PinGenBatchX",urlcon.getDate()});
+LOG.log(Level.INFO,"{0}-{1}",new Object[]{"call SerialMapX",urlcon.getDate()});
 			} catch (MalformedURLException e) { 
 				LOG.log(Level.SEVERE, e.getMessage(), e);
 				result = "failed";
