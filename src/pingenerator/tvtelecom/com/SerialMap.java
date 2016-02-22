@@ -67,9 +67,9 @@ LOG.log(Level.INFO,"sql0:{0}",new Object[]{sql0});
 			rs = st.executeQuery(sql0);
 			if (rs.next()) {
 				//String CHANNEL = rs.getString("CHANNEL");
-				int DIGIT = rs.getInt("DIGIT");
-				//int PINDIGIT = rs.getInt("PINDIGIT");
-				sql = sql.replaceAll("_DIGIT", Integer.toString(DIGIT));
+				//int DIGIT = rs.getInt("DIGIT");
+				int PINDIGIT = rs.getInt("PINDIGIT");
+				sql = sql.replaceAll("_DIGIT", Integer.toString(PINDIGIT));
 LOG.log(Level.INFO,"sql:{0}",new Object[]{sql});
 				st.executeUpdate(sql);
 				result = "succeed";
@@ -91,12 +91,12 @@ LOG.log(Level.WARNING, ex.getMessage(), ex);
 		if (!result.equals("failed")) {
 			URLConnection urlcon;
 			try {
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"call SerialMapX",request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+Utils.appPath+"SerialMapX?jobId="+jobId+"&userId="+userId});
+LOG.log(Level.INFO,"SerialMap call SerialMapX url:{0}",new Object[]{request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+Utils.appPath+"SerialMapX?jobId="+jobId+"&userId="+userId});
 				URL url = new URL(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+Utils.appPath+"SerialMapX?jobId="+jobId+"&userId="+userId);
 				urlcon = url.openConnection();
 				urlcon.setConnectTimeout(100);
 				urlcon.setReadTimeout(100);
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"call SerialMapX",urlcon.getDate()});
+LOG.log(Level.INFO,"call SerialMapX: {0}",new Object[]{urlcon.getDate()});
 			} catch (MalformedURLException e) { 
 				LOG.log(Level.SEVERE, e.getMessage(), e);
 				result = "failed";

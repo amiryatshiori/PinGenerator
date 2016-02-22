@@ -32,9 +32,7 @@ CONNECT 'jdbc:derby:PinGen';
 //job type: PG = Pin gen, PS = Pin spec, SM = Serial Map, PE = Pin export
 //job status: I = initial, P = processing, S = success, F = fail
 
-//CREATE TABLE JOB (JOBID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),
-//PINDIGIT INT, PINAMOUNT BIGINT, STATUS VARCHAR(1), CREATOR INT NOT NULL, CREATEDDATE TIMESTAMP NOT NULL,
-//CONSTRAINT primary_key PRIMARY KEY (JOBID));
+//pin status: A = Available, M = Mapped
 
 INSERT INTO USR VALUES (1, 'Administrator', 'ADMIN', 'admin', 1, CURRENT_TIMESTAMP);
 

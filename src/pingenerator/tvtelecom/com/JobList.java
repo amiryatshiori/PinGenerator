@@ -39,7 +39,7 @@ public class JobList extends HttpServlet {
 		//HttpSession session = request.getSession(true);
 		//String userId = (String)session.getAttribute("userId");
         String jobId = request.getParameter("jobId");
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"JobList",jobId});  
+LOG.log(Level.INFO,"JobList jobId:{0}",new Object[]{jobId});  
 
 		Connection con = null;
 		Statement st1 = null;
@@ -59,12 +59,13 @@ LOG.log(Level.INFO,"{0}-{1}",new Object[]{"JobList",jobId});
 			rs1 = st1.executeQuery(sql1);
 			while (rs1.next()) {
                 json = new JSONObject();
-                json.put("JOBID",rs1.getInt("JOBID"));
-                json.put("PINDIGIT",rs1.getInt("PINDIGIT"));
-                json.put("PINAMOUNT",rs1.getLong("PINAMOUNT"));
+                json.put("JOBID",rs1.getString("JOBID"));
+                json.put("TYPE",rs1.getString("TYPE"));
+                json.put("DIGIT",rs1.getInt("DIGIT"));
+                json.put("AMOUNT",rs1.getLong("AMOUNT"));
                 json.put("STATUS",rs1.getString("STATUS"));
-                json.put("CREATOR",rs1.getInt("CREATOR"));
-                json.put("CREATEDDATE",dFormat.format(new java.util.Date(rs1.getTimestamp("CREATEDDATE").getTime())));
+                json.put("UPDATEDBY",rs1.getInt("UPDATEDBY"));
+                json.put("UPDATEDDATE",dFormat.format(new java.util.Date(rs1.getTimestamp("UPDATEDDATE").getTime())));
                 jsonA.add(json);
 			}
 			result = "succeed";

@@ -2,22 +2,20 @@
 <div id="serialMapCarousel" class="ink-carousel">
     <ul class="stage column-group">
         <li class="slide all-100">
+        <div id="serialMapAlert"></div>
 <form id="formSerialMap" class="ink-form">
 <div class="control-group required">
 	<label for="serialPattern">Pattern:</label>
 	<div class="control">
 
-	<select id="serialPattern" name="serialPattern" style="width:15em;">
-
-	</select>
-
+	<select id="serialPattern" name="serialPattern" style="width:15em;"></select>
 	<!--  <input id="pinDigit" name="pinDigit" type="number" style="width:15em;" min="1" max="15" placeholder="pinDigit" value="12">  -->
 	</div>
 </div>
 <div class="control-group required">
 	<label for="pinAmount">Pin Amount:</label>
 	<div class="control">
-	    <input id="pinAmount" name="pinAmount" style="width:15em;" type="text" placeholder="Pin Amount" maxlength="7" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 188))' >
+	    <input id="pinAmount" name="pinAmount" class="ink-fv-required ink-fv-number" style="width:15em;" type="text" placeholder="Pin Amount" maxlength="7" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 188))' >
 	</div>
 </div>
 	<input id="buttonMap" type="button" value="&nbsp;&nbsp;&nbsp;Map&nbsp;&nbsp;&nbsp;" class="ink-button green" onclick="serialMapButtonMapClick();">
@@ -26,11 +24,11 @@
         </li>
 
         <li class="slide all-100">
-        	<div id="pinGenBatchJobId"></div><br/>
-			<div id="pinGenBatchAction">Generating..</div> 
+        	<div id="serialMapJobId"></div><br/>
+			<div id="serialMapAction">Generating..</div> 
 			<br/><br/>
-			<div id="pinGenBatchProgressBar" class="ink-progress-bar" data-start-value="0">
-    			<span id="pinGenBatchProgressBarCaption" class="caption"><i class="fa fa-cog fa-spin"></i>&nbsp;&nbsp;Generating...</span><div class="bar green"></div>
+			<div id="serialMapProgressBar" class="ink-progress-bar" data-start-value="0">
+    			<span id="serialMapProgressBarCaption" class="caption"><i class="fa fa-cog fa-spin"></i>&nbsp;&nbsp;Generating...</span><div class="bar green"></div>
 			</div>
 			<br/>You can close this page to continue your work<br/>
 			and find your job progress on <a onclick="menuJobList();">Job List</a> later
@@ -41,7 +39,7 @@
     </ul>
 </div>
 <div class="ink-shade fade">
-    <div id="formSerialMapConfirm" class="ink-modal fade" data-trigger="#formPinGenBatchConfirmTrigger" data-width="500px" data-height="400px" role="dialog" aria-hidden="true" aria-labelled-by="modal-title">
+    <div id="formSerialMapConfirm" class="ink-modal fade" data-trigger="#formSerialMapConfirmTrigger" data-width="500px" data-height="400px" role="dialog" aria-hidden="true" aria-labelled-by="modal-title">
         <div class="modal-header">
             <!-- <button class="modal-close ink-dismiss"></button>  -->
             <h2 id="modal-title">Map Serial</h2>

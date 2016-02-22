@@ -100,8 +100,10 @@ LOG.log(Level.INFO,"{0}-{1}",new Object[]{"PinGenBatchCSV","result: "+result});
 		    	LOG.log(Level.WARNING, ex.getMessage(), ex);
 		    }
 		}
+		SimpleDateFormat dFileFormat = new SimpleDateFormat("yyMMdd_hhmmss");
+		String fileName = "PinGen_"+dFileFormat.format(new Date());
 		response.setContentType("text/csv");
-		response.setHeader("Content-Disposition", "attachment; filename=\"job-"+jobId+".csv\"");
+		response.setHeader("Content-Disposition", "attachment; filename=\""+fileName+".csv\"");
 		response.setCharacterEncoding(Utils.CharacterEncoding);
 		PrintWriter out = response.getWriter();
 		out.print(result);
