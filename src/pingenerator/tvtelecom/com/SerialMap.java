@@ -53,7 +53,7 @@ LOG.log(Level.INFO,"userId:{0} serialPattern:{1} pinAmount:{2} jobId:{3}",new Ob
 		Statement st = null;
 		ResultSet rs = null;
 		String sql0 = "SELECT * FROM PATTERN WHERE PATTERNID = "+serialPattern;
-		String sql = "insert into job (JOBID,TYPE,DIGIT,AMOUNT,SERIALPATTERN,STATUS,UPDATEDBY,UPDATEDDATE) values ('" + jobId + "','SM',_DIGIT," + pinAmount + ","+serialPattern+",'I',"+ userId + ",CURRENT_TIMESTAMP)";
+		String sql = "insert into job (JOBID,TYPE,DIGIT,AMOUNT,PATTERNID,STATUS,UPDATEDBY,UPDATEDDATE) values ('" + jobId + "','SM',_DIGIT," + pinAmount + ","+serialPattern+",'I',"+ userId + ",CURRENT_TIMESTAMP)";
 		
 		String result="failed";
 		
