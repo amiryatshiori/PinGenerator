@@ -41,11 +41,23 @@
         <script type="text/javascript" src="js/autoload.js"></script>
         <script type="text/javascript" src="js/pingen.js"></script>
         <script type="text/javascript">
-            Ink.requireModules(['Ink.Dom.Loaded_1','Ink.Util.Url_1'], function (DomLoaded,InkUrl) { 
-				DomLoaded.run(function(){
+            Ink.requireModules(['Ink.Dom.Loaded_1','Ink.Util.Url_1','Ink.Net.Ajax_1'], function (DomLoaded,InkUrl,Ajax) { 
+              DomLoaded.run(function(){
             	  var p = InkUrl.parseUrl(InkUrl.getUrl());
             	  url_home = p.scheme + "://" + p.host + "/PinGenerator";
             	  Ink.log(window.url_home);
+                  new Ajax("Login", {
+                      method: 'GET',
+                      postBody: "",
+                      onSuccess: function(obj) {
+                          if(obj && obj.responseJSON) {
+                          	Ink.log("result: " + obj.responseJSON['result']);
+                          }
+                      }, 
+                      onFailure: function() {
+                    	  Ink.log("result: failed on network!");
+                      }
+                  });
               });
             });  
         </script>
@@ -66,65 +78,75 @@
         -->
 
 <div id="bar-top">
-    <nav id="bar-top-nav" class="ink-navigation ink-grid">
+    <nav class="ink-navigation ink-grid">
        	<ul class="menu horizontal push-left">
             <li class="active"><a onclick="goHome();" class="logoPlaceholder" >CAT</a></li>
-        </ul> 
+        </ul>
+        <ul class="menu horizontal push-right">
+            <li><a href="#">item</a></li>
+        </ul>
     </nav>
 </div>
 <div>&nbsp;</div>
 
-<div id="main-screen" class="ink-grid">
+<div id="main-screen" class="ink-grid">     <!-- 
+  <div class="column-group">
+    <div class="menu-left">
 
-<div class="panel-main push-center" style="margin-top:100px;width:500px;">
-<div class="panel">
-<h2>Pin Generator / Login&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-credit-card"></i></h2>
-<div id="loginCarousel" class="ink-carousel">
-    <ul class="stage column-group">
-        <li class="slide all-100">
-<form id="formLogin" class="ink-form">
-<div class="control-group required">
-	<label for="userName">Username:</label>
-	<div class="control prepend-symbol">
-	<span>
-	<input id="userName" name="userName" type="text" class="ink-fv-required" placeholder="Username" value="admin">
-	<i class="fa fa-male"></i>
-	</span>
-	</div>
-</div>
-<div class="control-group required">
-	<label for="password">Password:</label>
-	<div class="control prepend-symbol">
-	<span>
-	    <input id="password" name="password" class="ink-fv-required" type="password" placeholder="Password" value="admin11">
-	    <i class="fa fa-key"></i>
-	</span>
-	</div>
-</div>
-
-<br/>
-<input id="buttonLogin" type="button" value="&nbsp;&nbsp;&nbsp;Login&nbsp;&nbsp;&nbsp;" class="ink-button green push-right" onclick="loginButtonLoginClick();">
-</form>
+<nav class="ink-navigation vertical-space">
+    <ul class="menu vertical blue">
+        <li class="heading active"><a onclick="goHome();"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;&nbsp;Pin Generator</a></li>
+        <li class="submenu">
+            <a>Generate PIN<i class="fa fa-chevron-right push-right space-top-font"></i></a>
+            <ul class="submenu flyout right" style="background:#ddd;color:white;">
+                <li><a onclick="menuPinGenBatch();">Batch</a></li>
+                <li><a onclick="menuPinGenSpecific();">Specific PIN</a></li>
+            </ul>
         </li>
+        <li><a  onclick="menuMapSerial();">Map Serial</a></li>
+        <li><a onclick="menuPinExport();">Export PIN</a></li>
+        <li><a onclick="menuJobList();">Job List</a></li>
+        <li class="disabled"><a href="#">Compare PIN</a></li>
+        <li class="separator-above disabled"><a>User Admin</a></li>
+        <li class="disabled"><a>Audit Log</a></li>
 
-        <li class="slide all-100">
-        <br/><br/>
-        <div class="ink-alert basic" role="alert"><br/>
-    	<p><b ><i class="fa fa-key"></i>&nbsp;&nbsp;&nbsp;</b> Invalid username or password...</p><br/>
-		</div>
-		<br/><br/><br/>
-		<div id="buttonTryAgain" class="push-right"><button class="ink-button red" onclick="loginButtonTryAgainClick()">&nbsp;&nbsp;&nbsp;Try Again&nbsp;&nbsp;&nbsp;</button></div>
-		<br/><br/><br/>
-        </li>
     </ul>
-</div>
-</div>
-</div>
+</nav>
+    </div>
 
+    <div class="panel-main">    
+<div class="ink-grid vertical-space">
+<div class="panel">
+   <div id="main-panel">   <!--
+      <h2>Pin Generator</h2>
+ 
+   <div class="dbPinStockCount"><p>Pin Stock</p>1 000 000</div>
+
+  <div class="column-group">
+   	<div class="all-5"></div>
+    <div class="all-30">
+		<div class="dbPinStockCount"><p>Pin Stock</p>1 000 000</div>
+    </div>
+    <div class="all-30">
+		<div class="dbPinStockCount"><p>Pin Stock</p>1 000 000</div>
+    </div>
+    <div class="all-30">
+		<div class="dbPinStockCount"><p>Pin Stock</p>1 000 000</div>
+    </div>
+  </div>
+ -->
+
+   </div>
+   <br/>
+</div>
+</div>
+    </div>
+    
+    
+  </div>   -->
 </div>
 
 <footer class="bar-bottom">
-<!-- 
             <ul class="unstyled">
                 <li class="hide-all show-tiny tiny">TINY</li>
                 <li class="hide-all show-small small">SMALL</li>
@@ -132,7 +154,6 @@
                 <li class="hide-all show-large large">LARGE</li>
                 <li class="hide-all show-xlarge xlarge">XLARGE</li>
             </ul>
--->
 </footer>
 
             

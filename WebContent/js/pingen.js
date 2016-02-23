@@ -81,6 +81,43 @@ function addSep(nStr) {
     return x1 + x2;
 }
 
+function loginButtonLoginClick() {
+	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Carousel_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Carousel,FormValidator) {
+	    var form = Ink.i('formLogin');
+        if (FormValidator.validate(form)) {
+            var formData = FormSerialize.serialize(form);
+    	    var uri = window.url_home + '/Login';
+    	    new Ajax(uri, {
+    	        method: 'POST',
+    	        postBody: formData,
+    	        onSuccess: function(obj) {
+    	            if(obj && obj.responseJSON) {
+    	            	var result = obj.responseJSON['result'];var name = obj.responseJSON['name'];
+Ink.log("result: " + result);Ink.log("name: " + name);
+    					if(result==="succeed"){
+    						InkElement.appendHTML(Ink.i('bar-top-nav'),'<ul class="menu horizontal push-right"><li><a href="#">'+name+'</a></li></ul>');
+
+    						
+    						
+    						InkElement.setHTML(Ink.i('main-screen'),'');
+    					} else {
+    					    if (typeof crsLogin == "undefined") {crsLogin = new Carousel('#loginCarousel');}
+    						crsLogin.nextPage();	
+    					}
+    	            }
+    	        }, 
+    	        onFailure: function() {result="failed on network!"
+Ink.log("result: " + result);
+    	        }
+    	    });
+        }
+	});
+}
+
+function loginButtonTryAgainClick() {
+	crsLogin.previousPage();
+}
+
 function pinGenBatchButtonGenerateClick() {
 	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
 	    var form = Ink.i('formPinGenBatch');
