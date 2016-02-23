@@ -96,10 +96,25 @@ function loginButtonLoginClick() {
 Ink.log("result: " + result);Ink.log("name: " + name);
     					if(result==="succeed"){
     						InkElement.appendHTML(Ink.i('bar-top-nav'),'<ul class="menu horizontal push-right"><li><a href="#">'+name+'</a></li></ul>');
+    						var mainScreen = '<div class="column-group"><div class="menu-left"><nav class="ink-navigation vertical-space"><ul class="menu vertical blue">';
+    						mainScreen += '<li class="heading active"><a onclick="goHome();"><i class="fa fa-credit-card"></i>&nbsp;&nbsp;&nbsp;Pin Generator</a></li>';
+    						mainScreen += '<li class="submenu"><a>Generate PIN<i class="fa fa-chevron-right push-right space-top-font"></i></a>';
+    						mainScreen += '<ul class="submenu flyout right" style="background:#ddd;color:white;"><li><a onclick="menuPinGenBatch();">Batch</a></li>';
+    						mainScreen += '<li><a onclick="menuPinGenSpecific();">Specific PIN</a></li></ul></li>';
+    						mainScreen += '<li><a  onclick="menuMapSerial();">Map Serial</a></li><li><a onclick="menuPinExport();">Export PIN</a></li><li><a onclick="menuJobList();">Job List</a></li>';
+    						mainScreen += '<li class="disabled"><a href="#">Compare PIN</a></li><li class="separator-above disabled"><a>User Admin</a></li><li class="disabled"><a>Audit Log</a></li>';
+    						mainScreen += '</ul></nav></div>';
+    						mainScreen += '<div class="panel-main"><div class="ink-grid vertical-space"><div class="panel"><div id="main-panel">';
+    						mainScreen += '<h2>Pin Generator</h2>';
+    						mainScreen += '<div class="dbPinStockCount"><p>Pin Stock</p>1 000 000</div>';
+    						mainScreen += '<div class="column-group"><div class="all-5"></div>';
+    						mainScreen += '<div class="all-30"><div class="dbPinStockCount"><p>Pin Stock</p>1 000 000</div></div>';
+    						mainScreen += '<div class="all-30"><div class="dbPinStockCount"><p>Pin Stock</p>1 000 000</div></div>';
+    						mainScreen += '<div class="all-30"><div class="dbPinStockCount"><p>Pin Stock</p>1 000 000</div></div></div>';
 
-    						
-    						
-    						InkElement.setHTML(Ink.i('main-screen'),'');
+    						mainScreen += '</div><br/></div></div></div></div>';
+
+    						InkElement.setHTML(Ink.i('main-screen'),mainScreen);
     					} else {
     					    if (typeof crsLogin == "undefined") {crsLogin = new Carousel('#loginCarousel');}
     						crsLogin.nextPage();	
