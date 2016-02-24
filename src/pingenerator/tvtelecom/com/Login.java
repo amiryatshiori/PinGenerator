@@ -35,7 +35,7 @@ public class Login extends HttpServlet {
         request.setCharacterEncoding(Utils.CharacterEncoding);
         String userName = request.getParameter("userName").trim().toUpperCase();
         String password = request.getParameter("password").trim();
-LOG.log(Level.INFO,"userName:{0} password:{1}",new Object[]{userName,password});
+//LOG.log(Level.INFO,"userName:{0} password:{1}",new Object[]{userName,password});
 
 		MessageDigest md;
 		try {
@@ -49,7 +49,7 @@ LOG.log(Level.INFO,"userName:{0} password:{1}",new Object[]{userName,password});
 			 sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
 			}
 			password = sb.toString();
-LOG.log(Level.INFO,"userName:{0} password:{1}",new Object[]{userName,password});			
+//LOG.log(Level.INFO,"userName:{0} password:{1}",new Object[]{userName,password});			
 			//convert the byte to hex format method 2
 			/*
 			StringBuffer hexString = new StringBuffer();
@@ -79,7 +79,7 @@ LOG.log(Level.INFO,"userName:{0} password:{1}",new Object[]{userName,password});
 			con = ds.getConnection();
 			st1 = con.createStatement();
 			rs1 = st1.executeQuery(sql1);
-LOG.log(Level.INFO,"sql1:{0}",new Object[]{sql1});	
+//LOG.log(Level.INFO,"sql1:{0}",new Object[]{sql1});	
 			if (rs1.next()) {
 				result="failed";
 				userId = rs1.getInt("USERID");

@@ -34,44 +34,12 @@
             Modernizr.load({
               test: Modernizr.flexbox,
               nope : 'css/ink-legacy.min.css'
-            });  
+            });
         </script>
 
+        <script type="text/javascript" src="js/holder.js"></script>
         <script type="text/javascript" src="js/ink-all.min.js"></script>
         <script type="text/javascript" src="js/autoload.js"></script>
-        <script type="text/javascript" src="js/pingen.js"></script>
-        <script type="text/javascript">
-            Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Loaded_1','Ink.Util.Url_1','Ink.Dom.Element_1'], function (Ajax,DomLoaded,InkUrl,InkElement) { 
-				DomLoaded.run(function(){
-            	  var p = InkUrl.parseUrl(InkUrl.getUrl());
-            	  url_home = p.scheme + "://" + p.host + "/PinGenerator";
-            	  Ink.log(window.url_home);
-                  new Ajax("LoginCheckSession", {
-                      method: 'GET',
-                      onSuccess: function(obj) {
-                          if(obj && obj.responseJSON) {
-                        	  var result = obj.responseJSON['result'];
-Ink.log("result: " + result);
-							if(result==="succeed"){
-	    						var container = Ink.i('main-screen');
-	    						Ajax.load('main.html', function (res) {
-	    						    InkElement.setHTML(container,res);
-	    						});
-							} else {
-	    						var container = Ink.i('main-screen');
-	    						Ajax.load('login.html', function (res) {
-	    						    InkElement.setHTML(container,res);
-	    						});
-							}
-                          }
-                      }, 
-                      onFailure: function() {
-Ink.log("result: failed on network!");
-                      }
-                  });
-              });
-            });  
-        </script>
     </head>
 
     <body>
@@ -89,29 +57,95 @@ Ink.log("result: failed on network!");
         -->
 
 <div id="bar-top">
-    <nav id="bar-top-nav" class="ink-navigation ink-grid">
+    <nav class="ink-navigation ink-grid">
        	<ul class="menu horizontal push-left">
-            <li class="active"><a onclick="goHome();" class="logoPlaceholder" >CAT</a></li>
-        </ul> 
+            <li class="active"><a href="#" class="logoPlaceholder" >CAT</a></li>
+        </ul>
+        <ul class="menu horizontal push-right">
+            <li><a href="#">item</a></li>
+        </ul>
     </nav>
 </div>
 <div>&nbsp;</div>
 
-<div id="main-screen" class="ink-grid">
+<div class="ink-grid">
+  <div class="column-group">
+    <div class="all-20"></div>
+    <div class="all-85">
+    
+    
+<div class="ink-grid vertical-space">
+   <div class="panel">
 
 
+<form class="ink-form vertical-space">
+    <div class="control-group all-33">
+        <label for="email">Email</label>
+        <div class="control">
+            <input id="email" name="email" type="text" placeholder="Type some text">
+        </div>
+        <div class="space"></div>
+        <input type="submit" value="Search" class="ink-button green">
+    </div>
+</form>
+
+<script>
+Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.Event_1', 'Ink.Dom.FormSerialize_1'], function(Ajax, InkEvent, FormSerialize) {
+
+    var form = Ink.i('form');
+  
+    function doPost(event) {
+        InkEvent.stopDefault(event);
+
+        var formData = FormSerialize.serialize(form);
+    
+        var uri = '/endpoint.php';
+        new Ajax(uri, {
+            method: 'POST',
+            postBody: formData,
+            onSuccess: function(obj) {
+                if(obj && obj.responseJSON) {
+                    var req = obj.responseJSON;
+                }
+            }, 
+            onFailure: function() {
+                Ink.warn('Ajax request failed');
+            }
+        });    
+    }
+  
+    InkEvent.observe(form, 'submit', doPost);
+});
+</script>
+
+    </div>
+
+
+     
+</div>
+    </div>
+  </div>
 </div>
 
-<footer class="bar-bottom">
-<!-- 
-            <ul class="unstyled">
-                <li class="hide-all show-tiny tiny">TINY</li>
-                <li class="hide-all show-small small">SMALL</li>
-                <li class="hide-all show-medium medium">MEDIUM</li>
-                <li class="hide-all show-large large">LARGE</li>
-                <li class="hide-all show-xlarge xlarge">XLARGE</li>
-            </ul>
+
+
+
+
+    
+<!--
+        <footer class="clearfix">
+            <div class="ink-grid">
+                <ul class="unstyled inline half-vertical-space">
+                    <li class="active"><a href="#">About</a></li>
+                    <li><a href="#">Sitemap</a></li>
+                    <li><a href="#">Contacts</a></li>
+                </ul>
+                <p class="note">Identification of the owner of the copyright, either by name, abbreviation, or other designation by which it is generally known.</p>
+            </div>
+        </footer>
 -->
+<footer class="bar-bottom">
+
 </footer>
 
             
