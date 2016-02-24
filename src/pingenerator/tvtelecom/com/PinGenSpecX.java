@@ -35,7 +35,7 @@ public class PinGenSpecX extends HttpServlet {
         String jobId = request.getParameter("jobId");
         
         HttpSession session = request.getSession(true);
-		String userId = (String)session.getAttribute("userId");
+		String userId = ((Integer)session.getAttribute("userId")).toString();
         
 LOG.log(Level.INFO,"{0} {1}",new Object[]{"PinGenSpecX-pin: ",pin});
         

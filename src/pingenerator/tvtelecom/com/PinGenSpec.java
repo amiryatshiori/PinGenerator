@@ -38,7 +38,7 @@ public class PinGenSpec extends HttpServlet {
         String jobId = request.getParameter("jobid");
         
 		HttpSession session = request.getSession(true);
-		String userId = (String)session.getAttribute("userId");
+		String userId = ((Integer)session.getAttribute("userId")).toString();
 		
 		if (status.equals("P")) {
 			SimpleDateFormat dFormat = new SimpleDateFormat("yyMMddhhmmss");

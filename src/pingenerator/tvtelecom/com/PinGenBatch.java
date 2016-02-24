@@ -39,9 +39,8 @@ public class PinGenBatch extends HttpServlet {
         String pinDigit = request.getParameter("pinDigit");
         String pinAmount = request.getParameter("pinAmount");
 
-
 		HttpSession session = request.getSession(true);
-		String userId = Integer.parseInt((int)session.getAttribute("userId"));
+		String userId = ((Integer)session.getAttribute("userId")).toString();
 		
 		SimpleDateFormat dFormat = new SimpleDateFormat("yyMMddhhmmss");
 		String jobId = dFormat.format(new Date());
