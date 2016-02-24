@@ -44,8 +44,11 @@ function menuPinExport() {
 function menuJobList() {
 	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1','Ink.Net.JsonP_1'], function(Ajax,InkElement,JsonP) {
 		var container = Ink.i('main-panel');
-		InkElement.setHTML(container,'<h2>Job List</h2><div id="joblist"></div>');
-		var joblist = Ink.i('joblist');
+		Ajax.load('job-list.html', function (res) {
+		    InkElement.setHTML(container,res);
+		});
+		var joblist = Ink.i('test1'); //Ink.i('jobListTBody');
+		var table = Ink.i('jobList');
         var uri = window.url_home + '/JobList';
         new Ajax(uri, {
             method: 'GET',
@@ -53,12 +56,33 @@ function menuJobList() {
                 if(obj && obj.responseJSON) {
                   	var json = obj.responseJSON;
 					for(var i=0, total=json.joblist.length; i < total; i++) {
+						/**
 						var joblistStatusColor = "joblist-processing";
 						if (json.joblist[i].STATUS == 'S') {joblistStatusColor = "joblist-succeed"} 
 						else if (json.joblist[i].STATUS == 'F') {joblistStatusColor = "joblist-failed"}
 						var contents = '<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Job ID: '+json.joblist[i].JOBID;
-						contents += '<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Type: '+json.joblist[i].TYPE+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status: '+json.joblist[i].STATUS;
+						var contents = "<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Job: "+json.joblist[i].JOBTYPE;
+						contents += '<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status: '+json.joblist[i].JOBSTATUS+'<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Last updated: '+json.joblist[i].UPDATEDDATE;
+						contents += '<br/>&nbsp;<br/>&nbsp;';
 		        		InkElement.appendHTML(joblist,'<div class="joblist '+joblistStatusColor+'">'+contents+'</div>');
+		        		**/
+					    var contents = '<tr>';
+					    contents += '<td>'+json.joblist[i].JOBTYPE+'</td>';
+					    contents += '<td class="align-center">'+json.joblist[i].JOBSTATUS+'</td>';
+					    contents += '<td class="align-center">'+json.joblist[i].UPDATEDDATE+'</td>';
+					    contents += '<td class="align-center"></td>';
+					    contents += '</tr>';
+					    InkElement.appendHTML(joblist,contents);
+					    var row = table.insertRow(i);
+					    var cell1 = row.insertCell(0);
+					    var cell2 = row.insertCell(1);					    
+					    var cell3 = row.insertCell(2);
+					    var cell4 = row.insertCell(3);
+					    cell1.innerHTML = json.joblist[i].JOBTYPE;
+					    cell2.innerHTML = json.joblist[i].JOBSTATUS;
+					    cell3.innerHTML = json.joblist[i].UPDATEDDATE;
+					    cell4.innerHTML = '';
+Ink.log(contents);
 					}
                 }
             }, 
@@ -123,11 +147,15 @@ function loginButtonLoginClick() {
     	            	var result = obj.responseJSON['result'];var name = obj.responseJSON['name'];
 Ink.log("result: " + result);Ink.log("name: " + name);
     					if(result==="succeed"){
-    						InkElement.appendHTML(Ink.i('bar-top-nav'),'<ul class="menu horizontal push-right"><li><a href="#">'+name+'</a></li></ul>');
     						var container = Ink.i('main-screen');
     						Ajax.load('main.html', function (res) {
     						    InkElement.setHTML(container,res);
     						});
+    						var name = obj.responseJSON['name'];
+    						var pre = '&nbsp;';
+    						if(name.length<20){var l = name.length/2;l = 10 - l;for(var i = 1;i <= l; i++){pre += '&nbsp;';}}
+    						name = pre+name+pre;
+    						InkElement.appendHTML(Ink.i('bar-top-nav'),'<ul class="menu horizontal black push-right"><li><a>'+name+'</a><ul class="submenu" style="background:#1b99ee;"><li><a onclick="" style="color:white;">Change password</a></li><li><a onclick="menuSignout()" style="color:white;">Sign out</a></li></ul></li></ul>');
     					} else {
     					    if (typeof crsLogin == "undefined") {crsLogin = new Carousel('#loginCarousel');}
     						crsLogin.nextPage();	

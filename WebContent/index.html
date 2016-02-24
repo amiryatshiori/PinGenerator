@@ -57,7 +57,6 @@ Ink.log("result: " + result);
 	    						Ajax.load('main.html', function (res) {
 	    						    InkElement.setHTML(container,res);
 	    						});
-	    						
 	    						var name = obj.responseJSON['name'];
 	    						var pre = '&nbsp;';
 	    						if(name.length<20){var l = name.length/2;l = 10 - l;for(var i = 1;i <= l; i++){pre += '&nbsp;';}}

@@ -18,6 +18,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 //import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
@@ -36,18 +37,17 @@ public class JobList extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Logger LOG = Logger.getLogger(JobList.class.getName());
         request.setCharacterEncoding(Utils.CharacterEncoding);
-		//HttpSession session = request.getSession(true);
-		//String userId = (String)session.getAttribute("userId");
-        String jobId = request.getParameter("jobId");
-LOG.log(Level.INFO,"JobList jobId:{0}",new Object[]{jobId});  
+		HttpSession session = request.getSession(false);
+		String userId = ((Integer)session.getAttribute("userId")).toString(); 
 
 		Connection con = null;
 		Statement st1 = null;
-		String sql1 = "select * from job order by jobid desc";
-		if (jobId != null) {sql1 ="select * from job where jobid = " + jobId + " order by jobid desc";}
+		String sql1 = "select * from job where updatedby = "+userId+" order by jobid desc";
 		ResultSet rs1 = null;
 
 		String result="failed";
+		String jobType = "";
+		String jobStatus = "";
         JSONObject json;
         JSONArray jsonA = new JSONArray();
         SimpleDateFormat dFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
@@ -60,10 +60,19 @@ LOG.log(Level.INFO,"JobList jobId:{0}",new Object[]{jobId});
 			while (rs1.next()) {
                 json = new JSONObject();
                 json.put("JOBID",rs1.getString("JOBID"));
-                json.put("TYPE",rs1.getString("TYPE"));
+                jobType = rs1.getString("TYPE");
+                json.put("TYPE",jobType);
+                if (jobType.equals("PG")) {jobType = "Generate PIN/Batch";}
+                else if (jobType.equals("PE")) {jobType = "Export PIN";}
+                json.put("JOBTYPE",jobType);
                 json.put("DIGIT",rs1.getInt("DIGIT"));
                 json.put("AMOUNT",rs1.getLong("AMOUNT"));
-                json.put("STATUS",rs1.getString("STATUS"));
+                jobStatus = rs1.getString("STATUS");
+                json.put("STATUS",jobStatus);
+                if (jobStatus.equals("I")) {jobStatus = "Initiated";}
+                else if (jobStatus.equals("P")) {jobStatus = "Processing";}
+                else if (jobStatus.equals("S")) {jobStatus = "Succeed";}
+                json.put("JOBSTATUS",jobStatus);
                 json.put("UPDATEDBY",rs1.getInt("UPDATEDBY"));
                 json.put("UPDATEDDATE",dFormat.format(new java.util.Date(rs1.getTimestamp("UPDATEDDATE").getTime())));
                 jsonA.add(json);
