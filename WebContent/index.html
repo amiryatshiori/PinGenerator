@@ -57,6 +57,12 @@ Ink.log("result: " + result);
 	    						Ajax.load('main.html', function (res) {
 	    						    InkElement.setHTML(container,res);
 	    						});
+	    						
+	    						var name = obj.responseJSON['name'];
+	    						var pre = '&nbsp;';
+	    						if(name.length<20){var l = name.length/2;l = 10 - l;for(var i = 1;i <= l; i++){pre += '&nbsp;';}}
+	    						name = pre+name+pre;
+	    						InkElement.appendHTML(Ink.i('bar-top-nav'),'<ul class="menu horizontal black push-right"><li><a>'+name+'</a><ul class="submenu" style="background:#1b99ee;"><li><a onclick="" style="color:white;">Change password</a></li><li><a onclick="menuSignout()" style="color:white;">Sign out</a></li></ul></li></ul>');
 							} else {
 	    						var container = Ink.i('main-screen');
 	    						Ajax.load('login.html', function (res) {
@@ -91,7 +97,7 @@ Ink.log("result: failed on network!");
 <div id="bar-top">
     <nav id="bar-top-nav" class="ink-navigation ink-grid">
        	<ul class="menu horizontal push-left">
-            <li class="active"><a onclick="goHome();" class="logoPlaceholder" >CAT</a></li>
+            <li class="heading active"><a onclick="goHome();" class="logoPlaceholder" >CAT</a></li>
         </ul> 
     </nav>
 </div>

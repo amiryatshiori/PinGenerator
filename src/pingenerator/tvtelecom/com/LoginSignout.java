@@ -12,34 +12,31 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet("/LoginCheckSession")
-public class LoginCheckSession extends HttpServlet {
+@WebServlet("/LoginSignout")
+public class LoginSignout extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public LoginCheckSession() {
+    public LoginSignout() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Logger LOG = Logger.getLogger(LoginCheckSession.class.getName());
+        Logger LOG = Logger.getLogger(LoginSignout.class.getName());
         request.setCharacterEncoding(Utils.CharacterEncoding);
-        String name = "";
 		String result="failed";
         try {
-    		HttpSession session = request.getSession(false);
-    		String userId = ((Integer)session.getAttribute("userId")).toString();
-    		name = (String)session.getAttribute("name");
-    		String roleId = ((Integer)session.getAttribute("roleId")).toString();
-LOG.log(Level.INFO,"LoginCheckSession userId:{0} name:{1} roleId: {2}",new Object[]{userId,name,roleId});
+        	HttpSession session = request.getSession(false);
+        	if (session != null) {session.invalidate();}
 			result = "succeed";
-        } catch (java.lang.NullPointerException e) {
+        } catch (Exception e) {
         	result = "failed";
         } finally {
     		response.setContentType("application/json");
     		response.setCharacterEncoding(Utils.CharacterEncoding);
     		PrintWriter out = response.getWriter();
-    		out.print("{\"result\":\""+result+"\",\"name\":\""+name+"\"}");
+    		out.print("{\"result\":\""+result+"\"}");
     		out.flush();
+LOG.log(Level.INFO,"LoginSignout result:{0}",new Object[]{result});
         }
 	}
 

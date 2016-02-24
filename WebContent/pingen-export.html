@@ -24,11 +24,15 @@
 		<option value="2">2</option>
 		<option value="1">1</option>
 	</select>
-
-	<!--  <input id="pinDigit" name="pinDigit" type="number" style="width:15em;" min="1" max="15" placeholder="pinDigit" value="12">  -->
 	</div>
-</div><br/>
-	<input id="buttonExport" type="button" value="Export" class="ink-button green" onclick="pinExportButtonExportClick();">
+</div>
+<div class="control-group required">
+	<label for="pinAmount">Pin Amount:</label>
+	<div class="control">
+	    <input id="pinAmount" name="pinAmount" class="ink-fv-required ink-fv-number" style="width:15em;" type="text" placeholder="Pin Amount" maxlength="7" onkeypress='return ((event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 188))' >
+	</div>
+</div>
+	<input id="buttonExport" type="button" value="&nbsp;&nbsp;&nbsp;Export&nbsp;&nbsp;&nbsp;" class="ink-button green" onclick="pinExportButtonExportClick();">
 	<input id="buttonCancel" type="button" value="Cancel" class="ink-button red" onclick="goHome()">
 </form>
         </li>
@@ -57,6 +61,7 @@
         <div class="modal-body" id="modalContent">
             <h3>Please confirm</h3>
             <div id="pinDigitConfirm"></div>
+            <div id="pinAmountConfirm"></div>
             Do you really want to export PINs?
         </div>
         <div class="modal-footer">

@@ -37,7 +37,7 @@ public class PinGenSpec extends HttpServlet {
         String status = request.getParameter("s");
         String jobId = request.getParameter("jobid");
         
-		HttpSession session = request.getSession(true);
+		HttpSession session = request.getSession(false);
 		String userId = ((Integer)session.getAttribute("userId")).toString();
 		
 		if (status.equals("P")) {

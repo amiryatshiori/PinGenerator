@@ -33,6 +33,14 @@ html, body {
 
 .menu-left {width: 10em;}
 
+.ink-dropdown ul.dropdown-menu li.submenu:hover > a,
+.ink-dropdown ul.dropdown li.submenu:hover > a,
+.ink-navigation ul.dropdown-menu li.submenu:hover > a,
+.ink-navigation ul.dropdown li.submenu:hover > a {
+  background: #000;
+  text-decoration: none;
+}
+
 @media screen and (min-width: 1261px) {
 .panel-main {width:85%;}
 }

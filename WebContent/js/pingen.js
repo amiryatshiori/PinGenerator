@@ -69,6 +69,34 @@ Ink.log("result: failed on network!");
 	});
 }
 
+function menuPinHistory() {
+	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1'], function(Ajax,InkElement) {
+		var container = Ink.i('main-panel');
+		Ajax.load('pin-history.html', function (res) {
+		    InkElement.setHTML(container,res);
+		});
+	});
+}
+
+function menuSignout() {
+	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1'], function(Ajax,InkElement) {
+	    var uri = window.url_home + '/LoginSignout';
+	    new Ajax(uri, {
+	        method: 'GET',
+	        onSuccess: function(obj) {
+	            if(obj && obj.responseJSON) {
+	            	var result = obj.responseJSON['result'];
+Ink.log("result: " + result);
+					goHome();
+	            }
+	        }, 
+	        onFailure: function() {result="failed on network!"
+Ink.log("result: " + result);goHome();
+	        }
+	    });
+	});
+}
+
 function addSep(nStr) {
     nStr += '';
     x = nStr.split('.');
@@ -398,12 +426,15 @@ Ink.log("result: " + result);
 }
 
 function pinExportButtonExportClick() {
-	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1'], function(Ajax,FormSerialize,InkElement,Modal) {
+	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
 	    var form = Ink.i('formPinExport');
-        var formData = FormSerialize.serialize(form);
-		InkElement.setHTML(Ink.i('pinDigitConfirm'),'Pin Digit: <b style="color:red">' + formData.pinDigit + '</b>');
-		var modalPinGenBatch = new Modal('#formPinExportConfirm');
-		modalPinGenBatch.open(); 
+	    if (FormValidator.validate(form)) {
+	    	var formData = FormSerialize.serialize(form);
+	    	InkElement.setHTML(Ink.i('pinDigitConfirm'),'Pin Digit: <b style="color:red">' + formData.pinDigit + '</b>');
+	    	InkElement.setHTML(Ink.i('pinAmountConfirm'),'Pin Amount: <b style="color:red">' + formData.pinAmount + '</b>');
+	    	if (typeof modalPinExport == "undefined") {modalPinExport = new Modal('#formPinExportConfirm');}
+	    	modalPinExport.open();
+	    }
 	});
 }
 
@@ -465,4 +496,8 @@ Ink.log("result: " + result);
 	        }
 	    });
 	});
+}
+
+function pinHistoryButtonSearchClick() {
+	
 }

@@ -40,7 +40,7 @@ public class SerialMap extends HttpServlet {
         String pinAmount = request.getParameter("pinAmount");
 
 
-		HttpSession session = request.getSession(true);
+		HttpSession session = request.getSession(false);
 		String userId = (String)session.getAttribute("userId");
 		
 		SimpleDateFormat dFormat = new SimpleDateFormat("yyMMddhhmmss");
