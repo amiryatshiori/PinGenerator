@@ -19,68 +19,59 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-@WebServlet("/PinGenSpec")
-public class PinGenSpec extends HttpServlet {
+@WebServlet("/PinExportCSV")
+public class PinExportCSV extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public PinGenSpec() {
+    public PinExportCSV() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Logger LOG = Logger.getLogger(PinGenSpec.class.getName());
+        Logger LOG = Logger.getLogger(PinExportCSV.class.getName());
         request.setCharacterEncoding(Utils.CharacterEncoding);
-        int pinCount = Integer.parseInt(request.getParameter("pinCount"));
-        String status = request.getParameter("s");
-        String jobId = request.getParameter("jobid");
+		//HttpSession session = request.getSession(true);
+		//String userId = (String)session.getAttribute("userId");
+        String jobId = request.getParameter("jobId");
         
-		HttpSession session = request.getSession(false);
-		String userId = ((Integer)session.getAttribute("userId")).toString();
-		
-		if (status.equals("P")) {
-			SimpleDateFormat dFormat = new SimpleDateFormat("yyMMddhhmmss");
-			jobId = dFormat.format(new Date());
-		}
-		
-LOG.log(Level.INFO,"userId:{0} pinCount:{1} jobId:{2}",new Object[]{userId,pinCount,jobId});
+LOG.log(Level.INFO,"PinExportCSV JobId:{0}",new Object[]{jobId});
 
 		Connection con = null;
-		Statement st = null;
-		ResultSet rs = null;
-		String sql = "insert into job (JOBID,TYPE,AMOUNT,STATUS,UPDATEDBY,UPDATEDDATE) values ('" + jobId + "','PS'," + pinCount + ",'P',"+ userId + ",CURRENT_TIMESTAMP)";
-		if (!status.equals("P")) {sql = "UPDATE job SET STATUS = '"+status+"' WHERE jobid = '"+jobId+"'";}
-		String result="failed";
+		Statement st1 = null;
+		String sql1 ="select * from pinhist where jobid = '" + jobId + "'";
+		ResultSet rs1 = null;
 		
+		String result="";
 		try {
 			Context ctx = new InitialContext();
 			DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/PinGen");
-
 			con = ds.getConnection();
-			st = con.createStatement();
-LOG.log(Level.INFO,"sql:{0}",new Object[]{sql});
-			st.executeUpdate(sql);
-			result = "succeed";
+			st1 = con.createStatement();
+			rs1 = st1.executeQuery(sql1);
+			while (rs1.next()) {
+				result += rs1.getString("PIN")+"\n";
+			}
+LOG.log(Level.INFO,"PinExportCSV result:{0}",new Object[]{result});
 		} catch(NamingException | SQLException ex) {
-LOG.log(Level.SEVERE, ex.getMessage(), ex);
+			LOG.log(Level.SEVERE, ex.getMessage(), ex);
 			result = "failed";
 		} finally {
 		    try {
-		    	if (rs != null) {rs.close();}
-		        if (st != null) {st.close();}
+		        if (rs1 != null) {rs1.close();}if (st1 != null) {st1.close();}
 		        if (con != null) {con.close();}
 		    } catch (SQLException ex) {
-LOG.log(Level.WARNING, ex.getMessage(), ex);
-				result = "failed";
+		    	LOG.log(Level.WARNING, ex.getMessage(), ex);
 		    }
 		}
-
-		response.setContentType("application/json");
+		SimpleDateFormat dFileFormat = new SimpleDateFormat("yyMMdd_hhmmss");
+		String fileName = "PinGen_"+dFileFormat.format(new Date());
+		response.setContentType("text/csv");
+		response.setHeader("Content-Disposition", "attachment; filename=\""+fileName+".csv\"");
 		response.setCharacterEncoding(Utils.CharacterEncoding);
 		PrintWriter out = response.getWriter();
-		out.print("{\"result\":\""+result+"\",\"jobId\":"+jobId+"}");
+		out.print(result);
 		out.flush();
 	}
 

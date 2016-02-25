@@ -52,7 +52,7 @@ LOG.log(Level.INFO,"SerialMapX jobId:{0}",new Object[]{jobId});
 		String sql2r = "";
 		
 		Statement st3 = null;
-		String sql3 = "select count(pin) c from pin where status = 'A' and serial is null";	
+		String sql3 = "select count(pin) c from pin where status = 'A' and serial is null";
 		String sql31 = "select * from pin where status = 'A' and serial is null FETCH FIRST _amount ROWS ONLY";	
 		ResultSet rs3 = null;
 		

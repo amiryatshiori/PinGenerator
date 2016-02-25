@@ -82,8 +82,8 @@ LOG.log(Level.WARNING, ex.getMessage(), ex);
 		if (!result.equals("failed")) {
 			URLConnection urlcon;
 			try {
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"test",request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/PinGenerator/"+"PinGenBatchX?jobId="+jobId+"&userId="+userId});
-				URL url = new URL(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+"/PinGenerator/"+"PinGenBatchX?jobId="+jobId+"&userId="+userId);
+LOG.log(Level.INFO,"{0}-{1}",new Object[]{"test",request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+Utils.appPath+"PinGenBatchX?jobId="+jobId+"&userId="+userId});
+				URL url = new URL(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+Utils.appPath+"PinGenBatchX?jobId="+jobId+"&userId="+userId);
 				urlcon = url.openConnection();
 				urlcon.setConnectTimeout(100);
 				urlcon.setReadTimeout(100);

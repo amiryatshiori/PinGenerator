@@ -35,7 +35,7 @@ function menuMapSerial() {
 function menuPinExport() {
 	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1'], function(Ajax,InkElement) {
 		var container = Ink.i('main-panel');
-		Ajax.load('pingen-export.html', function (res) {
+		Ajax.load('pin-export.html', function (res) {
 		    InkElement.setHTML(container,res);
 		});
 	});
@@ -46,50 +46,70 @@ function menuJobList() {
 		var container = Ink.i('main-panel');
 		Ajax.load('job-list.html', function (res) {
 		    InkElement.setHTML(container,res);
+	        var uri = window.url_home + '/JobList';
+	        new Ajax(uri, {
+	            method: 'GET',
+	            onSuccess: function(obj) {
+	                if(obj && obj.responseJSON) {
+	                  	var json = obj.responseJSON;
+	        			var joblist = Ink.i('joblist');
+						for(var i=0, total=json.joblist.length; i < total; i++) {
+							/*
+							var joblistStatusColor = "joblist-processing";
+							if (json.joblist[i].STATUS == 'S') {joblistStatusColor = "joblist-succeed"} 
+							else if (json.joblist[i].STATUS == 'F') {joblistStatusColor = "joblist-failed"}
+							var contents = '<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Job ID: '+json.joblist[i].JOBID;
+							var contents = "<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Job: "+json.joblist[i].JOBTYPE;
+							contents += '<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status: '+json.joblist[i].JOBSTATUS+'<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Last updated: '+json.joblist[i].UPDATEDDATE;
+							contents += '<br/>&nbsp;<br/>&nbsp;';
+			        		InkElement.appendHTML(joblist,'<div class="joblist '+joblistStatusColor+'">'+contents+'</div>');
+			        		*/
+							if (json.joblist[i].STATUS == 'S') {joblistStatusColor = "success"} 
+							else if (json.joblist[i].STATUS == 'F') {joblistStatusColor = "error"}
+							else if (json.joblist[i].STATUS == 'P') {joblistStatusColor = "info"}
+							else if (json.joblist[i].STATUS == 'I') {joblistStatusColor = "warning"}
+			        		var contents = '<div class="ink-alert block '+joblistStatusColor+'">';
+			        		contents += '<h4>JOB: '+json.joblist[i].JOBTYPE+'</h4><div class="push-right" style="margin-top:-2.5em;"><b>JOBID:&nbsp;</b>'+json.joblist[i].JOBID+'&nbsp;&nbsp;&nbsp;</div>';
+			        	    if (json.joblist[i].STATUS == 'F') {
+			        	    	contents += '<p><b>Status: </b>'+json.joblist[i].JOBSTATUS+' - '+json.joblist[i].DESC1+'</p>';
+			        	    } else {
+			        	    	contents += '<p><b>Status: </b>'+json.joblist[i].JOBSTATUS+'</p>';
+			        	    }
+			        	    contents += '<p><b>Last updated: </b>'+json.joblist[i].UPDATEDDATE+'</p>';
+			        	    if (json.joblist[i].STATUS == 'S') {
+			        	    	var resultLink = 'JobListResult';if(json.joblist[i].TYPE == 'PE'){resultLink = 'PinExportCSV';}
+			        	    	contents += '<a class="ink-button blue push-right" style="margin-top:-3em;margin-right:1em;" href="'+window.url_home + '/'+resultLink+'?jobId='+json.joblist[i].JOBID+'">Result</a>';
+			        	    }
+			        	    InkElement.appendHTML(joblist,contents);
+			        		/**
+						    var contents = '<tr>';
+						    contents += '<td>'+json.joblist[i].JOBTYPE+'</td>';
+						    contents += '<td class="align-center">'+json.joblist[i].JOBSTATUS+'</td>';
+						    contents += '<td class="align-center">'+json.joblist[i].UPDATEDDATE+'</td>';
+						    contents += '<td class="align-center"></td>';
+						    contents += '</tr>';
+						    //InkElement.appendHTML(jobList,contents);
+						    
+						    var row = table.insertRow(table.rows.length);
+						    var cell1 = row.insertCell(0);
+						    var cell2 = row.insertCell(1);					    
+						    var cell3 = row.insertCell(2);
+						    var cell4 = row.insertCell(3);
+						    cell1.innerHTML = json.joblist[i].JOBTYPE;
+						    cell2.innerHTML = json.joblist[i].JOBSTATUS;
+						    cell3.innerHTML = json.joblist[i].UPDATEDDATE;
+						    cell4.innerHTML = '';
+						    
+	Ink.log(contents); **/
+						}
+	                }
+	            }, 
+	            onFailure: function() {
+	Ink.log("result: failed on network!");
+	            }
+	        });
 		});
-		var joblist = Ink.i('test1'); //Ink.i('jobListTBody');
-		var table = Ink.i('jobList');
-        var uri = window.url_home + '/JobList';
-        new Ajax(uri, {
-            method: 'GET',
-            onSuccess: function(obj) {
-                if(obj && obj.responseJSON) {
-                  	var json = obj.responseJSON;
-					for(var i=0, total=json.joblist.length; i < total; i++) {
-						/**
-						var joblistStatusColor = "joblist-processing";
-						if (json.joblist[i].STATUS == 'S') {joblistStatusColor = "joblist-succeed"} 
-						else if (json.joblist[i].STATUS == 'F') {joblistStatusColor = "joblist-failed"}
-						var contents = '<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Job ID: '+json.joblist[i].JOBID;
-						var contents = "<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Job: "+json.joblist[i].JOBTYPE;
-						contents += '<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Status: '+json.joblist[i].JOBSTATUS+'<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Last updated: '+json.joblist[i].UPDATEDDATE;
-						contents += '<br/>&nbsp;<br/>&nbsp;';
-		        		InkElement.appendHTML(joblist,'<div class="joblist '+joblistStatusColor+'">'+contents+'</div>');
-		        		**/
-					    var contents = '<tr>';
-					    contents += '<td>'+json.joblist[i].JOBTYPE+'</td>';
-					    contents += '<td class="align-center">'+json.joblist[i].JOBSTATUS+'</td>';
-					    contents += '<td class="align-center">'+json.joblist[i].UPDATEDDATE+'</td>';
-					    contents += '<td class="align-center"></td>';
-					    contents += '</tr>';
-					    InkElement.appendHTML(joblist,contents);
-					    var row = table.insertRow(i);
-					    var cell1 = row.insertCell(0);
-					    var cell2 = row.insertCell(1);					    
-					    var cell3 = row.insertCell(2);
-					    var cell4 = row.insertCell(3);
-					    cell1.innerHTML = json.joblist[i].JOBTYPE;
-					    cell2.innerHTML = json.joblist[i].JOBSTATUS;
-					    cell3.innerHTML = json.joblist[i].UPDATEDDATE;
-					    cell4.innerHTML = '';
-Ink.log(contents);
-					}
-                }
-            }, 
-            onFailure: function() {
-Ink.log("result: failed on network!");
-            }
-        });
+
 	});
 }
 
@@ -219,7 +239,7 @@ Ink.log("result: " + result);
 
 function pinGenBatchUpdateProgress(probar,jobId,pinAmount) {
 	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1','Ink.UI.ProgressBar_1'], function(Ajax,InkElement,ProgressBar) {
-	    var uri = window.url_home + '/PinGenBatchCount?jobId='+jobId;
+	    var uri = window.url_home + '/PinCount?jobId='+jobId;
 	    new Ajax(uri, {
 	        method: 'GET',
 	        onSuccess: function(obj) {
@@ -291,6 +311,7 @@ function pinGenSpecButtonConfirmClick() {
 		var form = Ink.i('formPinGenSpec');
 	    var formData = FormSerialize.serialize(form);
 	    Ink.i('buttonAdd').disabled = true;Ink.i('buttonCancel').disabled = true;
+	    
 	    var uri = window.url_home + '/PinGenSpec?s=P';
 	    new Ajax(uri, {
 	        method: 'POST',
@@ -300,9 +321,10 @@ function pinGenSpecButtonConfirmClick() {
 	            	var result = obj.responseJSON['result'];var jobId = obj.responseJSON['jobId'];
 Ink.log("result: " + result);Ink.log("jobId: " + jobId);
 					if(result==="succeed"){
+						var countSuccess = 0;
 						for (var i = 0; i < aPin.length; i++) {
 							var uri = window.url_home + '/PinGenSpecX?pin='+aPin[i]+'&pinId='+i+'&jobId='+jobId;
-						    new Ajax(uri, {
+						    new Ajax(uri, {asynchronous: false,
 						        method: 'GET',
 						        onSuccess: function(obj) {
 						            if(obj && obj.responseJSON) {
@@ -311,7 +333,7 @@ Ink.log("result: " + result);Ink.log("jobId: " + jobId);
 										if(result==="duplicated"){
 											InkElement.setHTML(Ink.i('pinSpin'+pinId),'<i class="fa fa-times-circle" style="color:red"></i>');
 											InkElement.setHTML(Ink.i('pinMsg'+pinId),'<div class="ink-label red" style="font-size:.5em;height:1.8em;margin-top:1.4em;">Duplicated PIN</div>');
-										} else if(result==="succeed"){
+										} else if(result==="succeed"){countSuccess++;Ink.log("countSuccess: " + countSuccess);
 											InkElement.setHTML(Ink.i('pinSpin'+pinId),'<i class="fa fa-check-circle" style="color:green"></i>');
 										} else {
 											InkElement.setHTML(Ink.i('pinSpin'+pinId),'<i class="fa fa-times-circle" style="color:red"></i>');
@@ -324,8 +346,9 @@ Ink.log("result: " + result);Ink.log("jobId: " + jobId);
 						        }
 						    });
 						}
-
-					    var uri = window.url_home + '/PinGenSpec?s=S&jobid='+jobId;
+						var lastJobStatus = 'D';Ink.log("countSuccess: " + countSuccess);
+						if (countSuccess > 0) {lastJobStatus = 'S';InkElement.setHTML(Ink.i('pinGenSpecJobId'),'Job ID: <b style="color:red">' + jobId + '</b>');}Ink.log("lastJobStatus: " + lastJobStatus);
+					    var uri = window.url_home + '/PinGenSpec?s='+lastJobStatus+'&jobid='+jobId;
 					    new Ajax(uri, {
 					        method: 'POST',
 					        postBody: formData,
@@ -470,6 +493,7 @@ function pinExportButtonConfirmClick() {
 Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Carousel_1','Ink.UI.ProgressBar_1'], function(Ajax,FormSerialize,InkElement,Carousel,ProgressBar) {
     var form = Ink.i('formPinExport');
     var formData = FormSerialize.serialize(form);
+    var pinAmount = formData.pinAmount;
     Ink.i('pinDigit').disabled = true;
     Ink.i('buttonExport').disabled = true;Ink.i('buttonCancel').disabled = true;
     var uri = window.url_home + '/PinExport';
@@ -478,8 +502,8 @@ Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element
         postBody: formData,
         onSuccess: function(obj) {
             if(obj && obj.responseJSON) {
-            	var result = obj.responseJSON['result'];
-Ink.log("result: " + result);
+            	var result = obj.responseJSON['result'];var jobId = obj.responseJSON['jobId'];
+Ink.log("result: " + result + " jobId: " + jobId);
 				if(result==="succeed"){
 					var crs = new Carousel('#pinExportCarousel');crs.nextPage();
 					InkElement.setHTML(Ink.i('pinExportJobId'),'Job ID: <b style="color:red">' + jobId + '</b>');
@@ -497,22 +521,27 @@ Ink.log("result: " + result);
 
 function pinExportUpdateProgress(probar,jobId,pinAmount) {
 	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1','Ink.UI.ProgressBar_1'], function(Ajax,InkElement,ProgressBar) {
-	    var uri = window.url_home + '/PinGenBatchCount?jobId='+jobId;
+	    var uri = window.url_home + '/PinCount?jobId='+jobId;
 	    new Ajax(uri, {
 	        method: 'GET',
 	        onSuccess: function(obj) {
 	            if(obj && obj.responseJSON) {
-	            	var result = obj.responseJSON['result'];var c = obj.responseJSON['count'];
-Ink.log("result: " + result);Ink.log("jobId: " + jobId);Ink.log("count: " + c);
+	            	var result = obj.responseJSON['result'];var c = obj.responseJSON['count'];var status = obj.responseJSON['status'];var desc1 = obj.responseJSON['desc1'];
+Ink.log("result: " + result + " jobId: " + jobId + " count: " + c + " status: " + status);
 					if(result==="succeed"){
-						if (!probar) {probar = new ProgressBar('#pinGenBatchProgressBar');}
+						if (!probar) {probar = new ProgressBar('#pinExportProgressBar');}
 						var p = c/pinAmount*100;
 						probar.setValue(Math.floor(p));
 						if (c < pinAmount) {
-							setTimeout(function(){pinGenBatchUpdateProgress(probar,jobId,pinAmount);},3000);
+							if (status == "F") {
+								InkElement.setHTML(Ink.i('pinExportProgressBarCaption'),'<div style="color:red"><i class="fa fa-cog"></i>&nbsp;&nbsp;Failed</div>');
+								InkElement.setHTML(Ink.i('pinExportAction'),'<div style="color:red">Failed - '+desc1+'</div>');
+							} else {
+								setTimeout(function(){pinExportUpdateProgress(probar,jobId,pinAmount);},3000);
+							}
 						} else {
-							InkElement.setHTML(Ink.i('pinGenBatchProgressBarCaption'),'<div style="color:white"><i class="fa fa-cog"></i>&nbsp;&nbsp;Succeed</div>');
-							InkElement.setHTML(Ink.i('pinGenBatchAction'),'Export as CSV file: click <a href="'+window.url_home + '/PinGenBatchCSV?jobId='+jobId+'">here</a>');
+							InkElement.setHTML(Ink.i('pinExportProgressBarCaption'),'<div style="color:white"><i class="fa fa-cog"></i>&nbsp;&nbsp;Succeed</div>');
+							InkElement.setHTML(Ink.i('pinExportAction'),'Export as CSV file: click <a href="'+window.url_home + '/PinExportCSV?jobId='+jobId+'">here</a>');
 						}
 					} else {
 Ink.log("result: " + result);

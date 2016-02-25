@@ -42,7 +42,7 @@ public class JobList extends HttpServlet {
 
 		Connection con = null;
 		Statement st1 = null;
-		String sql1 = "select * from job where updatedby = "+userId+" order by jobid desc";
+		String sql1 = "select * from job where status <> 'D' and updatedby = "+userId+" order by jobid desc";
 		ResultSet rs1 = null;
 
 		String result="failed";
@@ -63,6 +63,7 @@ public class JobList extends HttpServlet {
                 jobType = rs1.getString("TYPE");
                 json.put("TYPE",jobType);
                 if (jobType.equals("PG")) {jobType = "Generate PIN/Batch";}
+                else if (jobType.equals("PS")) {jobType = "Generate PIN/Specific";}
                 else if (jobType.equals("PE")) {jobType = "Export PIN";}
                 json.put("JOBTYPE",jobType);
                 json.put("DIGIT",rs1.getInt("DIGIT"));
@@ -72,7 +73,10 @@ public class JobList extends HttpServlet {
                 if (jobStatus.equals("I")) {jobStatus = "Initiated";}
                 else if (jobStatus.equals("P")) {jobStatus = "Processing";}
                 else if (jobStatus.equals("S")) {jobStatus = "Succeed";}
+                else if (jobStatus.equals("F")) {jobStatus = "Failed";}
                 json.put("JOBSTATUS",jobStatus);
+                json.put("DESC1",rs1.getString("DESC1"));
+                json.put("DESC2",rs1.getString("DESC2"));
                 json.put("UPDATEDBY",rs1.getInt("UPDATEDBY"));
                 json.put("UPDATEDDATE",dFormat.format(new java.util.Date(rs1.getTimestamp("UPDATEDDATE").getTime())));
                 jsonA.add(json);

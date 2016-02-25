@@ -19,58 +19,57 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-@WebServlet("/PinGenBatchCount")
-public class PinGenBatchCount extends HttpServlet {
+@WebServlet("/JobListResult")
+public class JobListResult extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public PinGenBatchCount() {
+    public JobListResult() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Logger LOG = Logger.getLogger(PinGenBatchCount.class.getName());
-        request.setCharacterEncoding(Utils.CharacterEncoding);    
+        Logger LOG = Logger.getLogger(JobListResult.class.getName());
+        request.setCharacterEncoding(Utils.CharacterEncoding);
+		//HttpSession session = request.getSession(true);
+		//String userId = (String)session.getAttribute("userId");
         String jobId = request.getParameter("jobId");
         
-LOG.log(Level.INFO,"{0} {1}",new Object[]{"PinGenBatchCount-jobId: ",jobId});
+LOG.log(Level.INFO,"JobListResult JobId:{0}",new Object[]{jobId});
 
 		Connection con = null;
 		Statement st1 = null;
-		String sql1 ="select count(*) c from pin where jobid = '" + jobId + "'";
+		String sql1 ="select * from pinhist where jobid = '" + jobId + "'";
 		ResultSet rs1 = null;
 		
-		String result="failed";
-		long c=0;
+		String result="";
 		try {
 			Context ctx = new InitialContext();
 			DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/PinGen");
 			con = ds.getConnection();
 			st1 = con.createStatement();
 			rs1 = st1.executeQuery(sql1);
-			if (rs1.next()) {
-				result="failed";
-				c = rs1.getLong("c");
-				result = "succeed";
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"PinGenBatchCount","count: "+c});
+			while (rs1.next()) {
+				result += rs1.getString("PIN")+"\n";
 			}
+LOG.log(Level.INFO,"JobListResult result:{0}",new Object[]{result});
 		} catch(NamingException | SQLException ex) {
 			LOG.log(Level.SEVERE, ex.getMessage(), ex);
 			result = "failed";
 		} finally {
-            try {
-                if (rs1 != null) {rs1.close();}if (st1 != null) {st1.close();}
-                if (con != null) {con.close();}
-            } catch (SQLException ex) {
-            	LOG.log(Level.WARNING, ex.getMessage(), ex);
-            }
+		    try {
+		        if (rs1 != null) {rs1.close();}if (st1 != null) {st1.close();}
+		        if (con != null) {con.close();}
+		    } catch (SQLException ex) {
+		    	LOG.log(Level.WARNING, ex.getMessage(), ex);
+		    }
 		}
-
-		response.setContentType("application/json");
+		String fileName = "JOBID"+jobId;
+		response.setContentType("text/csv");
+		response.setHeader("Content-Disposition", "attachment; filename=\""+fileName+".csv\"");
 		response.setCharacterEncoding(Utils.CharacterEncoding);
 		PrintWriter out = response.getWriter();
-		out.print("{\"result\":\""+result+"\",\"jobId\":"+jobId+",\"count\":"+c+"}");
+		out.print(result);
 		out.flush();
-
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

@@ -30,7 +30,7 @@ CONNECT 'jdbc:derby:PinGen;create=true';
 CONNECT 'jdbc:derby:PinGen';
 
 //job type: PG = Pin gen, PS = Pin spec, SM = Serial Map, PE = Pin export
-//job status: I = initial, P = processing, S = success, F = fail
+//job status: I = initial, P = processing, S = success, F = fail, D=deleted
 
 //pin status: A = Available, M = Mapped
 
