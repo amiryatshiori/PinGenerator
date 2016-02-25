@@ -26,23 +26,30 @@
 <div class="panel-main">    
 <div class="ink-grid vertical-space">
 <div class="panel">
-   <div id="main-panel">
-      <h2>Pin Generator</h2>
- 
-   <div class="dbPinStockCount"><p>Pin Stock</p>1 000 000</div>
+<div id="main-panel" onclick="updateDashboard()">
+<h2>Pin Generator</h2>
 
-  <div class="column-group">
-   	<div class="all-5"></div>
-    <div class="all-30">
-		<div class="dbPinStockCount"><p>Pin Stock</p>1 000 000</div>
-    </div>
-    <div class="all-30">
-		<div class="dbPinStockCount"><p>Pin Stock</p>1 000 000</div>
-    </div>
-    <div class="all-30">
-		<div class="dbPinStockCount"><p>Pin Stock</p>1 000 000</div>
-    </div>
-  </div>
+<div class="column-group gutters">
+<div class="all-5"></div>
+
+<div class="all-30">
+<div class="ink-alert basic success">
+<h2><i class="fa fa-credit-card"></i></h2>
+<h5>Available PIN</h5>
+    <p id="cA"></p>
+</div>
+</div>
+
+<div class="all-60">
+<div class="ink-alert basic info align-right">
+<h2><i class="fa fa-credit-card"></i></h2>
+<h5>Distributed PIN</h5>
+    <p id="cM">12000</p>
+</div>
+</div>
+
+</div>
+</div>
 
 
    </div>

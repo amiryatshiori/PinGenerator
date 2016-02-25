@@ -153,6 +153,27 @@ function addSep(nStr) {
     return x1 + x2;
 }
 
+function updateDashboard() {
+	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Carousel_1','Ink.UI.ProgressBar_1'], function(Ajax,FormSerialize,InkElement,Carousel,ProgressBar) {
+	    var uri = window.url_home + '/MainDashboard';
+	    new Ajax(uri, {
+	        method: 'GET',
+	        onSuccess: function(obj) {
+	            if(obj && obj.responseJSON) {
+	            	var result = obj.responseJSON['result'];var cA = obj.responseJSON['cA'];var cM = obj.responseJSON['cM'];
+Ink.log("result: " + result + " cA: " + cA + " cM: " + cM);
+					if(result==="succeed"){
+						InkElement.setHTML(Ink.i('cA'),cA);InkElement.setHTML(Ink.i('cM'),cM);
+					}
+	            }
+	        }, 
+	        onFailure: function() {result="failed on network!"
+	Ink.log("result: " + result);
+	        }
+	    });
+	});
+}
+
 function loginButtonLoginClick() {
 	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Carousel_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Carousel,FormValidator) {
 	    var form = Ink.i('formLogin');
