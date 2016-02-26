@@ -20,6 +20,24 @@ function menuPinGenSpecific() {
 	});
 }
 
+function menuPinCompare() {
+	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1'], function(Ajax,InkElement) {
+		var container = Ink.i('main-panel');
+		Ajax.load('pin-compare.html', function (res) {
+		    InkElement.setHTML(container,res);
+		});
+	});
+}
+
+function menuPinLoad() {
+	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1'], function(Ajax,InkElement) {
+		var container = Ink.i('main-panel');
+		Ajax.load('pin-load.html', function (res) {
+		    InkElement.setHTML(container,res);
+		});
+	});
+}
+
 function menuMapSerial() {
 	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1'], function(Ajax,InkElement) {
 		var container = Ink.i('main-panel');
