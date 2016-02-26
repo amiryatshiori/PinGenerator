@@ -21,39 +21,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-@WebServlet("/PinGenBatchCSV")
-public class PinGenBatchCSV extends HttpServlet {
+@WebServlet("/SerialMapCSV")
+public class SerialMapCSV extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public PinGenBatchCSV() {
+    public SerialMapCSV() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Logger LOG = Logger.getLogger(PinGenBatchCSV.class.getName());
+        Logger LOG = Logger.getLogger(SerialMapCSV.class.getName());
         request.setCharacterEncoding(Utils.CharacterEncoding);
-		//HttpSession session = request.getSession(true);
-		//String userId = (String)session.getAttribute("userId");
         String jobId = request.getParameter("jobId");
         
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"PinGenBatchCSV",jobId});
-
-		SimpleDateFormat dFormat = new SimpleDateFormat("yyMMddhhmmss");
-		String exportJobId = dFormat.format(new Date());
+LOG.log(Level.INFO,"SerialMapCSV JobId:{0}",new Object[]{jobId});
 
 		Connection con = null;
 		Statement st1 = null;
-		String sql1 ="select * from job where jobid = '" + jobId + "'";
+		String sql1 ="select * from pinhist where jobid = '" + jobId + "'";
 		ResultSet rs1 = null;
-		
-		Statement st2 = null;
-		String sql2 ="select * from pin where jobid = '" + jobId + "'";
-		ResultSet rs2 = null;
-
-		Statement st3 = null;
-		String sql31 = "insert into job (JOBID,TYPE,DIGIT,AMOUNT,STATUS,DESC1,UPDATEDBY,UPDATEDDATE) values ('" + exportJobId + "','PE',_pinDigit,_pinAmount,'I','" + jobId + "',_updatedby,CURRENT_TIMESTAMP)";
-		String sql32 = "update job set status = '_status' where jobid = '" + exportJobId + "'";
-		String sql3r = "";
 		
 		String result="";
 		try {
@@ -61,47 +47,24 @@ LOG.log(Level.INFO,"{0}-{1}",new Object[]{"PinGenBatchCSV",jobId});
 			DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/PinGen");
 			con = ds.getConnection();
 			st1 = con.createStatement();
-			
-			
 			rs1 = st1.executeQuery(sql1);
-			if (rs1.next()) {
-				int pinDigit = rs1.getInt("DIGIT");
-				long pinAmount = rs1.getLong("AMOUNT");
-				int updatedBy = rs1.getInt("UPDATEDBY");
-				
-	            sql3r = sql31.replaceAll("_pinDigit", Integer.toString(pinDigit));
-	            sql3r = sql3r.replaceAll("_pinAmount", Long.toString(pinAmount));
-	            sql3r = sql3r.replaceAll("_updatedby", Integer.toString(updatedBy));
-				st3 = con.createStatement();
-				st3.executeUpdate(sql3r);
-				
-	            sql3r = sql32.replaceAll("_status", "P");
-				st3.executeUpdate(sql3r);
-				
-				st2 = con.createStatement();
-				rs2 = st2.executeQuery(sql2);
-				while (rs2.next()) {
-					result += rs2.getString("PIN")+"\n";
-				}
-				
-	            sql3r = sql32.replaceAll("_status", "S");
-				st3.executeUpdate(sql3r);
+			while (rs1.next()) {
+				result += rs1.getString("PIN")+","+rs1.getString("SERIAL")+"\n";
 			}
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"PinGenBatchCSV","result: "+result});
+LOG.log(Level.INFO,"SerialMapCSV result:{0}",new Object[]{result});
 		} catch(NamingException | SQLException ex) {
 			LOG.log(Level.SEVERE, ex.getMessage(), ex);
 			result = "failed";
 		} finally {
 		    try {
 		        if (rs1 != null) {rs1.close();}if (st1 != null) {st1.close();}
-		        if (st2 != null) {st2.close();}
 		        if (con != null) {con.close();}
 		    } catch (SQLException ex) {
 		    	LOG.log(Level.WARNING, ex.getMessage(), ex);
 		    }
 		}
 		SimpleDateFormat dFileFormat = new SimpleDateFormat("yyMMdd_hhmmss");
-		String fileName = "PinGen_"+dFileFormat.format(new Date());
+		String fileName = "SerialMap_"+dFileFormat.format(new Date());
 		response.setContentType("text/csv");
 		response.setHeader("Content-Disposition", "attachment; filename=\""+fileName+".csv\"");
 		response.setCharacterEncoding(Utils.CharacterEncoding);

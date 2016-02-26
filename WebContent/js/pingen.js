@@ -77,7 +77,9 @@ function menuJobList() {
 			        	    }
 			        	    contents += '<p><b>Last updated: </b>'+json.joblist[i].UPDATEDDATE+'</p>';
 			        	    if (json.joblist[i].STATUS == 'S') {
-			        	    	var resultLink = 'JobListResult';if(json.joblist[i].TYPE == 'PE'){resultLink = 'PinExportCSV';}
+			        	    	var resultLink = 'JobListResult';
+			        	    	if(json.joblist[i].TYPE == 'PE'){resultLink = 'PinExportCSV';}
+			        	    	else if (json.joblist[i].TYPE == 'SM') {resultLink = 'SerialMapCSV';}
 			        	    	contents += '<a class="ink-button blue push-right" style="margin-top:-3em;margin-right:1em;" href="'+window.url_home + '/'+resultLink+'?jobId='+json.joblist[i].JOBID+'">Result</a>';
 			        	    }
 			        	    InkElement.appendHTML(joblist,contents);
@@ -275,7 +277,7 @@ Ink.log("result: " + result);Ink.log("jobId: " + jobId);Ink.log("count: " + c);
 							setTimeout(function(){pinGenBatchUpdateProgress(probar,jobId,pinAmount);},3000);
 						} else {
 							InkElement.setHTML(Ink.i('pinGenBatchProgressBarCaption'),'<div style="color:white"><i class="fa fa-cog"></i>&nbsp;&nbsp;Succeed</div>');
-							InkElement.setHTML(Ink.i('pinGenBatchAction'),'Export as CSV file: click <a href="'+window.url_home + '/PinGenBatchCSV?jobId='+jobId+'">here</a>');
+							InkElement.setHTML(Ink.i('pinGenBatchAction'),'Export as CSV file: click <a href="'+window.url_home + '/PinExportCSV?jobId='+jobId+'">here</a>');
 						}
 					} else {
 Ink.log("result: " + result);
@@ -417,7 +419,7 @@ function serialMapButtonConfirmClick() {
 	    var formData = FormSerialize.serialize(form);
 	    var pinAmount = formData.pinAmount;
 	    
-	    var uri = window.url_home + '/SerialMapCountA';
+	    var uri = window.url_home + '/PinCountA?patternid=' + formData.serialPattern;
 	    new Ajax(uri, {
 	        method: 'GET',
 	        onSuccess: function(obj) {
@@ -468,22 +470,27 @@ Ink.log("result: " + result);
 
 function serialMapUpdateProgress(probar,jobId,pinAmount) {
 	Ink.requireModules(['Ink.Net.Ajax_1','Ink.Dom.Element_1','Ink.UI.ProgressBar_1'], function(Ajax,InkElement,ProgressBar) {
-		var uri = window.url_home + '/SerialMapCount?jobId='+jobId;
+		var uri = window.url_home + '/PinCount?jobId='+jobId;
 	    new Ajax(uri, {
 	        method: 'GET',
 	        onSuccess: function(obj) {
 	            if(obj && obj.responseJSON) {
-	            	var result = obj.responseJSON['result'];var c = obj.responseJSON['count'];
+	            	var result = obj.responseJSON['result'];var c = obj.responseJSON['count'];var status = obj.responseJSON['status'];var desc1 = obj.responseJSON['desc1'];
 Ink.log("result: " + result);Ink.log("jobId: " + jobId);Ink.log("count: " + c);
 					if(result==="succeed"){
 						if (!probar) {probar = new ProgressBar('#serialMapProgressBar');}
 						var p = c/pinAmount*100;
 						probar.setValue(Math.floor(p));
 						if (c < pinAmount) {
-							setTimeout(function(){serialMapUpdateProgress(probar,jobId,pinAmount);},3000);
+							if (status == "F") {
+								InkElement.setHTML(Ink.i('serialMapProgressBarCaption'),'<div style="color:red"><i class="fa fa-cog"></i>&nbsp;&nbsp;Failed</div>');
+								InkElement.setHTML(Ink.i('serialMapAction'),'<div style="color:red">Failed - '+desc1+'</div>');
+							} else {
+								setTimeout(function(){serialMapUpdateProgress(probar,jobId,pinAmount);},3000);
+							}
 						} else {
 							InkElement.setHTML(Ink.i('serialMapProgressBarCaption'),'<div style="color:white"><i class="fa fa-cog"></i>&nbsp;&nbsp;Succeed</div>');
-							InkElement.setHTML(Ink.i('serialMapAction'),'Export as CSV file: click <a href="'+window.url_home + '/PinGenBatchCSV?jobId='+jobId+'">here</a>');
+							InkElement.setHTML(Ink.i('serialMapAction'),'Export as CSV file: click <a href="'+window.url_home + '/SerialMapCSV?jobId='+jobId+'">here</a>');
 						}
 					} else {
 Ink.log("result: " + result);
@@ -515,29 +522,50 @@ Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element
     var form = Ink.i('formPinExport');
     var formData = FormSerialize.serialize(form);
     var pinAmount = formData.pinAmount;
-    Ink.i('pinDigit').disabled = true;
-    Ink.i('buttonExport').disabled = true;Ink.i('buttonCancel').disabled = true;
-    var uri = window.url_home + '/PinExport';
+    var uri = window.url_home + '/PinCountA?digit=' + formData.pinDigit;
     new Ajax(uri, {
-        method: 'POST',
-        postBody: formData,
+        method: 'GET',
         onSuccess: function(obj) {
             if(obj && obj.responseJSON) {
-            	var result = obj.responseJSON['result'];var jobId = obj.responseJSON['jobId'];
+            	var result = obj.responseJSON['result'];var count = obj.responseJSON['count'];
+Ink.log("result: " + result);Ink.log("count: " + count);
+            					if(result==="succeed"){
+            						if (count >= pinAmount) {
+									    Ink.i('pinDigit').disabled = true;
+									    Ink.i('buttonExport').disabled = true;Ink.i('buttonCancel').disabled = true;
+									    var uri = window.url_home + '/PinExport';
+									    new Ajax(uri, {
+									        method: 'POST',
+									        postBody: formData,
+									        onSuccess: function(obj) {
+									            if(obj && obj.responseJSON) {
+									            	var result = obj.responseJSON['result'];var jobId = obj.responseJSON['jobId'];
 Ink.log("result: " + result + " jobId: " + jobId);
-				if(result==="succeed"){
-					var crs = new Carousel('#pinExportCarousel');crs.nextPage();
-					InkElement.setHTML(Ink.i('pinExportJobId'),'Job ID: <b style="color:red">' + jobId + '</b>');
-					var probar = probar = new ProgressBar('#pinExportProgressBar');
-					setTimeout(function(){pinExportUpdateProgress(probar,jobId,pinAmount);},2000);
-				}
-            }
-        }, 
-        onFailure: function() {result="failed on network!"
+													if(result==="succeed"){
+														var crs = new Carousel('#pinExportCarousel');crs.nextPage();
+														InkElement.setHTML(Ink.i('pinExportJobId'),'Job ID: <b style="color:red">' + jobId + '</b>');
+														var probar = probar = new ProgressBar('#pinExportProgressBar');
+														setTimeout(function(){pinExportUpdateProgress(probar,jobId,pinAmount);},2000);
+													}
+									            }
+									        }, 
+									        onFailure: function() {result="failed on network!"
 Ink.log("result: " + result);
-        }
-    });
-});
+									        }
+									    });
+            						} else {
+            							var alert = '<div class="ink-alert block" role="alert"><button class="ink-dismiss">&times;</button><h4>PIN is not enough!</h4>';
+            							alert += '<p>The amount of available PIN in stock is not enough for mapping process<br/>Please generate more PIN before execute further.</p></div>';
+            							InkElement.setHTML(Ink.i('pinExportAlert'),alert);
+            						}
+            					}
+            				}
+        				}, 
+        				onFailure: function() {result="failed on network!"
+Ink.log("result: " + result);
+        				}			    
+    				});
+				});
 }
 
 function pinExportUpdateProgress(probar,jobId,pinAmount) {

@@ -19,24 +19,23 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-@WebServlet("/SerialMapCount")
-public class SerialMapCount extends HttpServlet {
+@WebServlet("/PinCountA")
+public class PinCountA extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-    public SerialMapCount() {
+    public PinCountA() {
         super();
     }
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Logger LOG = Logger.getLogger(SerialMapCount.class.getName());
-        request.setCharacterEncoding(Utils.CharacterEncoding);    
-        String jobId = request.getParameter("jobId");
-LOG.log(Level.INFO,"SerialMapCount jobId:{0}",new Object[]{jobId});
-
+        Logger LOG = Logger.getLogger(PinCountA.class.getName());
+        request.setCharacterEncoding(Utils.CharacterEncoding);
+        String digit = request.getParameter("digit");
+        String patternid = request.getParameter("patternid");
 		Connection con = null;
 		Statement st1 = null;
-		String sql1 = "";
-		sql1 ="select count(*) c from pin where jobid = '" + jobId + "' and serial is not null";			
+		String sql0 = "select * from pattern where patternid = " + patternid;
+		String sql1 ="select count(*) c from pin where status = 'A' and serial is null and digit = _digit";			
 		ResultSet rs1 = null;
 		
 		String result="failed";
@@ -46,13 +45,21 @@ LOG.log(Level.INFO,"SerialMapCount jobId:{0}",new Object[]{jobId});
 			DataSource ds = (DataSource)ctx.lookup("java:comp/env/jdbc/PinGen");
 			con = ds.getConnection();
 			st1 = con.createStatement();
-LOG.log(Level.INFO,"SerialMapCount sql1:{0}",new Object[]{sql1});
+			if (patternid != null) {
+				rs1 = st1.executeQuery(sql0);
+				if (rs1.next()) {
+					digit = rs1.getString("PINDIGIT");
+				}
+				rs1.close();
+			}
+LOG.log(Level.INFO,"PinCountA digit:{0}",new Object[]{digit});
+			sql1 = sql1.replaceAll("_digit",digit);
+LOG.log(Level.INFO,"PinCountA sql1:{0}",new Object[]{sql1});
 			rs1 = st1.executeQuery(sql1);
 			if (rs1.next()) {
-				result="failed";
 				c = rs1.getLong("c");
 				result = "succeed";
-LOG.log(Level.INFO,"SerialMapCount count:{0}",new Object[]{c});
+LOG.log(Level.INFO,"PinCountA count:{0}",new Object[]{c});
 			}
 		} catch(NamingException | SQLException ex) {
 			LOG.log(Level.SEVERE, ex.getMessage(), ex);
@@ -69,7 +76,7 @@ LOG.log(Level.INFO,"SerialMapCount count:{0}",new Object[]{c});
 		response.setContentType("application/json");
 		response.setCharacterEncoding(Utils.CharacterEncoding);
 		PrintWriter out = response.getWriter();
-		out.print("{\"result\":\""+result+"\",\"jobId\":"+jobId+",\"count\":"+c+"}");
+		out.print("{\"result\":\""+result+"\",\"count\":"+c+"}");
 		out.flush();
 	}
 

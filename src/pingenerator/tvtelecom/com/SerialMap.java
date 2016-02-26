@@ -41,7 +41,7 @@ public class SerialMap extends HttpServlet {
 
 
 		HttpSession session = request.getSession(false);
-		String userId = (String)session.getAttribute("userId");
+		String userId = ((Integer)session.getAttribute("userId")).toString();
 		
 		SimpleDateFormat dFormat = new SimpleDateFormat("yyMMddhhmmss");
 		String jobId = dFormat.format(new Date());

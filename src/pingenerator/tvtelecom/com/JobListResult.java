@@ -30,8 +30,6 @@ public class JobListResult extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Logger LOG = Logger.getLogger(JobListResult.class.getName());
         request.setCharacterEncoding(Utils.CharacterEncoding);
-		//HttpSession session = request.getSession(true);
-		//String userId = (String)session.getAttribute("userId");
         String jobId = request.getParameter("jobId");
         
 LOG.log(Level.INFO,"JobListResult JobId:{0}",new Object[]{jobId});

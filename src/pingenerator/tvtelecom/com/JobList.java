@@ -65,6 +65,7 @@ public class JobList extends HttpServlet {
                 if (jobType.equals("PG")) {jobType = "Generate PIN/Batch";}
                 else if (jobType.equals("PS")) {jobType = "Generate PIN/Specific";}
                 else if (jobType.equals("PE")) {jobType = "Export PIN";}
+                else if (jobType.equals("SM")) {jobType = "Map Serial";}
                 json.put("JOBTYPE",jobType);
                 json.put("DIGIT",rs1.getInt("DIGIT"));
                 json.put("AMOUNT",rs1.getLong("AMOUNT"));
