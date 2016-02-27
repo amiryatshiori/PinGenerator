@@ -192,6 +192,7 @@ Ink.log("result: " + result + " cA: " + cA + " cM: " + cM);
 	        }
 	    });
 	});
+	setTimeout(function(){updateDashboard();},30000);
 }
 
 function loginButtonLoginClick() {
