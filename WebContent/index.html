@@ -62,7 +62,7 @@ Ink.log("result: " + result);
 	    						if(name.length<20){var l = name.length/2;l = 10 - l;for(var i = 1;i <= l; i++){pre += '&nbsp;';}}
 	    						name = pre+name+pre;
 	    						InkElement.appendHTML(Ink.i('bar-top-nav'),'<ul class="menu horizontal black push-right"><li><a>'+name+'</a><ul class="submenu" style="background:#1b99ee;"><li><a onclick="" style="color:white;">Change password</a></li><li><a onclick="menuSignout()" style="color:white;">Sign out</a></li></ul></li></ul>');
-	    						setTimeout(function(){updateDashboard();},3000);
+	    						setTimeout(function(){updateDashboard();},5000);
 							} else {
 	    						var container = Ink.i('main-screen');
 	    						Ajax.load('login.html', function (res) {
