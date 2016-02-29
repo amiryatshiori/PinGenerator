@@ -1,17 +1,18 @@
 <h2>Load PIN</h2>
 <div class="column-group">
 
-<form id="formComparePin" class="ink-form" style="width:50em;">
+<form id="formLoadPin" class="ink-form" style="width:50em;">
 <div class="control-group column-group">
 <label for="fileIN">File PinGen:&nbsp;&nbsp;&nbsp;</label>
 <div class="control append-button">
 <span><input id="fileIN" name="fileIN" style="width:15em;" type="text"></span>
 <button class="ink-button green">Browse</button>
+<input id="buttonBrowseFileIN" type="button" value="Browse" class="ink-button green" onclick="loadPinButtonBrowseFileINClick();">
 </div>
 <div id="pinpinSearchSpin" class="align-right" style="font-size:1.6em;margin-top:-.3em;margin-left:.8em"></div>
 </div>
 <br/>
-	<input id="buttonGenerate" type="button" value="Submit" class="ink-button green" onclick="comparePinButtonSubmitClick();">
+	<input id="buttonSubmit" type="button" value="Submit" class="ink-button green" onclick="loadPinButtonSubmitClick();">
 	<input id="buttonCancel" type="button" value="Cancel" class="ink-button red" onclick="goHome()">
 </form>
 

@@ -191,8 +191,8 @@ Ink.log("result: " + result + " cA: " + cA + " cM: " + cM);
 	Ink.log("result: " + result);
 	        }
 	    });
+		if (InkElement.isVisible(Ink.i('cA'))) {setTimeout(function(){updateDashboard();},10000);}
 	});
-	setTimeout(function(){updateDashboard();},30000);
 }
 
 function loginButtonLoginClick() {
@@ -415,6 +415,74 @@ Ink.log("result: " + result);
 Ink.log("result: " + result);
 	        }
 	    });
+	});
+}
+
+function comparePinButtonBrowseFileINClick() {
+	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
+	    var inputBrowse = Ink.i('buttonBrowseFileINHidden');
+	    inputBrowse.click();
+	});
+}
+
+function comparePinInputBrowseFileINChange() {
+	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
+	    var inputBrowse = Ink.i('buttonBrowseFileINHidden');
+	    var fileIN = Ink.i('fileIN');
+	    var file = inputBrowse.files[0];
+        if ('name' in file) {fileIN.value = file.name;}
+	    /**
+	    var txt;
+	    if ('files' in inputBrowse) {
+	        if (inputBrowse.files.length == 0) {
+	            txt = "Select one or more files.";
+	        } else {
+	            for (var i = 0; i < inputBrowse.files.length; i++) {
+	                txt += "<br><strong>" + (i+1) + ". file</strong><br>";
+	                var file = inputBrowse.files[i];
+	                if ('name' in file) {txt += "name: " + file.name + "<br>";}
+	                if ('size' in file) {txt += "size: " + file.size + " bytes <br>";}
+	            }
+	        }
+	    } 
+	    else {
+	        if (inputBrowse.value == "") {
+	            txt += "Select one or more files.";
+	        } else {
+	            txt += "The files property is not supported by your browser!";
+	            txt  += "<br>The path of the selected file: " + inputBrowse.value; // If the browser does not support the files property, it will return the path of the selected file instead. 
+	        }
+	    }
+	    alert(txt);
+	    **/
+        
+        
+        
+        
+        
+	});
+}
+
+function comparePinButtonBrowseFilePinGenClick() {
+	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
+	    var inputBrowse = Ink.i('buttonBrowseFilePinGenHidden');
+	    inputBrowse.click();
+	});
+}
+
+function comparePinInputBrowseFilePinGenChange() {
+	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
+	    var inputBrowse = Ink.i('buttonBrowseFilePinGenHidden');
+	    var filePinGen = Ink.i('filePinGen');
+	    var file = inputBrowse.files[0];
+        if ('name' in file) {filePinGen.value = file.name;}
+	});
+}
+
+function comparePinButtonSubmitClick() {
+	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
+	    var formComparePin = Ink.i('formComparePin');
+	    formComparePin.submit();
 	});
 }
 
