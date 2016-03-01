@@ -486,6 +486,22 @@ function comparePinButtonSubmitClick() {
 	});
 }
 
+function loadPinButtonBrowseFileINClick() {
+	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
+	    var inputBrowse = Ink.i('buttonBrowseFileINHidden');
+	    inputBrowse.click();
+	});
+}
+
+function loadPinInputBrowseFileINChange() {
+	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
+	    var inputBrowse = Ink.i('buttonBrowseFileINHidden');
+	    var fileIN = Ink.i('fileIN');
+	    var file = inputBrowse.files[0];
+        if ('name' in file) {fileIN.value = file.name;}
+	});
+}
+
 function serialMapButtonMapClick() {
 	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
 	    var form = Ink.i('formSerialMap');

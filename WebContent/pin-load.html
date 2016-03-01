@@ -6,11 +6,10 @@
 <label for="fileIN">File PinGen:&nbsp;&nbsp;&nbsp;</label>
 <div class="control append-button">
 <span><input id="fileIN" name="fileIN" style="width:15em;" type="text"></span>
-<button class="ink-button green">Browse</button>
 <input id="buttonBrowseFileIN" type="button" value="Browse" class="ink-button green" onclick="loadPinButtonBrowseFileINClick();">
 </div>
 <div id="pinpinSearchSpin" class="align-right" style="font-size:1.6em;margin-top:-.3em;margin-left:.8em"></div>
-</div>
+</div><input id="buttonBrowseFileINHidden" type="file" style="visibility:hidden" onchange="loadPinInputBrowseFileINChange()"/>
 <br/>
 	<input id="buttonSubmit" type="button" value="Submit" class="ink-button green" onclick="loadPinButtonSubmitClick();">
 	<input id="buttonCancel" type="button" value="Cancel" class="ink-button red" onclick="goHome()">
