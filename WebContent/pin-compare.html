@@ -1,7 +1,7 @@
 <h2>Compare PIN</h2>
 <div class="column-group">
 
-<form id="formComparePin" class="ink-form" style="width:50em;" enctype="multipart/form-data" method="post" action="PinCompareUpload">
+<form id="formComparePin" class="ink-form" style="width:50em;" enctype="multipart/form-data">
 <div class="control-group column-group">
 <label for="fileIN" style="margin-right:3em;">File IN:</label>
 <div class="control append-button">
@@ -9,7 +9,7 @@
 <input id="buttonBrowseFileIN" type="button" value="Browse" class="ink-button green" onclick="comparePinButtonBrowseFileINClick();">
 </div>
 <div id="pinpinSearchSpin" class="align-right" style="font-size:1.6em;margin-top:-.3em;margin-left:.8em"></div>
-</div><input id="buttonBrowseFileINHidden" type="file" style="visibility:hidden" onchange="comparePinInputBrowseFileINChange()"/>
+</div><input id="fileINHidden" type="file" style="visibility:hidden" onchange="comparePinInputBrowseFileINChange()"/>
 
 <div class="control-group column-group">
 <label for="filePinGen">File PinGen:&nbsp;&nbsp;&nbsp;</label>
@@ -18,7 +18,7 @@
 <input id="buttonBrowseFilePinGen" type="button" value="Browse" class="ink-button green" onclick="comparePinButtonBrowseFilePinGenClick();">
 </div>
 <div id="pinpinSearchSpin" class="align-right" style="font-size:1.6em;margin-top:-.3em;margin-left:.8em"></div>
-</div><input id="buttonBrowseFilePinGenHidden" type="file" style="visibility:hidden" onchange="comparePinInputBrowseFilePinGenChange()"/>
+</div><input id="filePinGenHidden" type="file" style="visibility:hidden" onchange="comparePinInputBrowseFilePinGenChange()"/>
 <br/>
 	<input id="buttonSubmit" type="button" value="Submit" class="ink-button green" onclick="comparePinButtonSubmitClick();">
 	<input id="buttonCancel" type="button" value="Cancel" class="ink-button red" onclick="goHome()">

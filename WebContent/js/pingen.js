@@ -420,14 +420,14 @@ Ink.log("result: " + result);
 
 function comparePinButtonBrowseFileINClick() {
 	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
-	    var inputBrowse = Ink.i('buttonBrowseFileINHidden');
+	    var inputBrowse = Ink.i('fileINHidden');
 	    inputBrowse.click();
 	});
 }
 
 function comparePinInputBrowseFileINChange() {
 	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
-	    var inputBrowse = Ink.i('buttonBrowseFileINHidden');
+	    var inputBrowse = Ink.i('fileINHidden');
 	    var fileIN = Ink.i('fileIN');
 	    var file = inputBrowse.files[0];
         if ('name' in file) {fileIN.value = file.name;}
@@ -465,14 +465,14 @@ function comparePinInputBrowseFileINChange() {
 
 function comparePinButtonBrowseFilePinGenClick() {
 	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
-	    var inputBrowse = Ink.i('buttonBrowseFilePinGenHidden');
+	    var inputBrowse = Ink.i('filePinGenHidden');
 	    inputBrowse.click();
 	});
 }
 
 function comparePinInputBrowseFilePinGenChange() {
 	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
-	    var inputBrowse = Ink.i('buttonBrowseFilePinGenHidden');
+	    var inputBrowse = Ink.i('filePinGenHidden');
 	    var filePinGen = Ink.i('filePinGen');
 	    var file = inputBrowse.files[0];
         if ('name' in file) {filePinGen.value = file.name;}
@@ -481,8 +481,38 @@ function comparePinInputBrowseFilePinGenChange() {
 
 function comparePinButtonSubmitClick() {
 	Ink.requireModules(['Ink.Net.Ajax_1', 'Ink.Dom.FormSerialize_1','Ink.Dom.Element_1','Ink.UI.Modal_1','Ink.UI.FormValidator_1'], function(Ajax,FormSerialize,InkElement,Modal,FormValidator) {
-	    var formComparePin = Ink.i('formComparePin');
-	    formComparePin.submit();
+	    //var formComparePin = Ink.i('formComparePin');
+	    //formComparePin.submit();
+		var fileIN = Ink.i('fileINHidden');
+	    var filePinGen = Ink.i('filePinGenHidden');
+	    
+	    
+	    var data = new FormData();
+	    data.append('fileINHidden', fileIN.files[0]);
+	    data.append('filePinGenHidden', filePinGen.files[0]);
+
+	    var request = new XMLHttpRequest();
+	    request.onreadystatechange = function(){
+	        if(request.readyState == 4){
+	            try {
+	                var resp = JSON.parse(request.response);
+	            } catch (e){
+	                var resp = {
+	                    status: 'error',
+	                    data: 'Unknown error occurred: [' + request.responseText + ']'
+	                };
+	            }
+	            console.log(resp.status + ': ' + resp.data);
+	        }
+	    };
+
+	    request.upload.addEventListener('progress', function(e){
+	        _progress.style.width = Math.ceil(e.loaded/e.total) * 100 + '%';
+	    }, false);
+
+	    request.open('POST', 'PinCompareUpload');
+	    request.send(data);
+	    
 	});
 }
 
