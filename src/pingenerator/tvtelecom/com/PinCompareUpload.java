@@ -1,11 +1,13 @@
 package pingenerator.tvtelecom.com;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -55,13 +57,22 @@ public class PinCompareUpload extends HttpServlet {
 		SimpleDateFormat dFormat = new SimpleDateFormat("yyMMddhhmmss");
 		String jobId = dFormat.format(new Date());
 		
-LOG.log(Level.INFO,"PinCompareUpload userId:{0} pinDigit:{1} pinAmount:{2} jobId:{3}",new Object[]{userId,pinDigit,pinAmount,jobId});
+		String uploadFolder = getServletContext().getInitParameter("uploadFolder"); 
+		
+LOG.log(Level.INFO,"PinCompareUpload uploadFolder:{0}",new Object[]{uploadFolder});
 
+		File file1 = new File(uploadFolder + fileINName);
+		File file2 = new File(uploadFolder + filePinGenName);
 
+		Files.copy(fileIN, file1.toPath());
+		Files.copy(filePinGen, file2.toPath());
+		
+		
+		
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
-		String sql = "insert into job (JOBID,TYPE,DIGIT,AMOUNT,STATUS,UPDATEDBY,UPDATEDDATE) values ('" + jobId + "','PE'," + pinDigit + "," + pinAmount + ",'I',"+ userId + ",CURRENT_TIMESTAMP)";
+		String sql = "insert into job (JOBID,TYPE,STATUS,UPDATEDBY,UPDATEDDATE) values ('" + jobId + "','PC','I',"+ userId + ",CURRENT_TIMESTAMP)";
 		
 		String result="failed";
 
@@ -92,12 +103,12 @@ LOG.log(Level.WARNING, ex.getMessage(), ex);
 		if (!result.equals("failed")) {
 			URLConnection urlcon;
 			try {
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"test",request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+Utils.appPath+"PinExportX?jobId="+jobId+"&userId="+userId});
-				URL url = new URL(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+Utils.appPath+"PinExportX?jobId="+jobId+"&userId="+userId);
+LOG.log(Level.INFO,"{0}-{1}",new Object[]{"test",request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+Utils.appPath+"PinCompareX?jobId="+jobId+"&userId="+userId});
+				URL url = new URL(request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+Utils.appPath+"PinCompareX?jobId="+jobId+"&userId="+userId);
 				urlcon = url.openConnection();
 				urlcon.setConnectTimeout(100);
 				urlcon.setReadTimeout(100);
-LOG.log(Level.INFO,"{0}-{1}",new Object[]{"call PinExportX",urlcon.getDate()});
+LOG.log(Level.INFO,"{0}-{1}",new Object[]{"call PinCompareX",urlcon.getDate()});
 			} catch (MalformedURLException e) { 
 				LOG.log(Level.SEVERE, e.getMessage(), e);
 				result = "failed";

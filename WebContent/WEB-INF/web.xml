@@ -4,4 +4,9 @@
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
+  <context-param> 
+    <description>Location to store uploaded file</description> 
+    <param-name>uploadFolder</param-name> 
+    <param-value>C:\home\pingen\tomcat7\uploads\</param-value> 
+</context-param>
 </web-app>
